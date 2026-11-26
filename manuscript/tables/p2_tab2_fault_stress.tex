@@ -1,0 +1,34 @@
+\begin{table*}[t]
+\centering
+\caption{Three-Modality Sensor-Fault Stress Summary across BIC, KIRC, LIHC, and GBM (4 Cohorts $\times$ 3 Seeds = 12 Runs per Setting; One-Sided Paired Wilcoxon BH-FDR $q$ Across $n=36$ $\sigma=4.0$ Runs, with $q = 1.46{\times}10^{-11}$ Fault-Weight Suppression vs.\ Every Weighted Baseline)}
+\label{tab:p2_fault}
+\scriptsize
+\renewcommand{\arraystretch}{1.14}
+\setlength{\tabcolsep}{2.2pt}
+\begin{tabular}{llcccccccccc}
+\toprule
+Fault Scenario & Metric & \shortstack{CL-\\VSSC} & \shortstack{Null-\\SNR} & \shortstack{DZ-\\PI} & \shortstack{w/o\\FB} & SNF & NEMO & MCGC & \shortstack{Seurat\\WNN} & \shortstack{Att.\\MOAE} & \shortstack{Sub.\\GAN} \\
+\midrule
+mRNA ($\sigma{=}4.0$) & ARI retention & 0.443 & 0.643 & 0.416 & 0.489 & 0.462 & 0.498 & 0.391 & 0.460 & 0.639 & 0.185 \\
+ & $-\log_{10}p_{\mathrm{asymp}}$ & 2.178 & 2.040 & 1.821 & 2.104 & 2.265 & 2.241 & 2.628 & 2.338 & 1.399 & 1.830 \\
+ & Fault weight & 0.011 & 0.001 & 0.022 & 0.333 & --- & --- & 0.172 & 0.258 & 0.314 & --- \\
+\midrule
+Methylation ($\sigma{=}4.0$) & ARI retention & 0.214 & 0.170 & 0.271 & 0.295 & 0.361 & 0.310 & 0.361 & 0.294 & 0.439 & 0.158 \\
+ & $-\log_{10}p_{\mathrm{asymp}}$ & 1.865 & 1.891 & 1.560 & 1.825 & 1.390 & 1.661 & 2.052 & 1.965 & 2.206 & 1.238 \\
+ & Fault weight & 0.017 & 0.003 & 0.031 & 0.333 & --- & --- & 0.189 & 0.276 & 0.308 & --- \\
+\midrule
+miRNA ($\sigma{=}4.0$) & ARI retention & 0.796 & 0.949 & 0.715 & 0.576 & 0.615 & 0.579 & 0.491 & 0.607 & 0.414 & 0.207 \\
+ & $-\log_{10}p_{\mathrm{asymp}}$ & 1.911 & 2.131 & 1.929 & 2.054 & 1.779 & 2.200 & 2.881 & 2.397 & 1.833 & 2.109 \\
+ & Fault weight & 0.009 & 0.001 & 0.018 & 0.333 & --- & --- & 0.209 & 0.259 & 0.334 & --- \\
+\midrule
+All assays ($\sigma{=}2.0$, 45\%) & ARI retention & 0.482 & \textbf{0.593} & 0.475 & 0.503 & 0.500 & 0.479 & 0.430 & 0.477 & 0.513 & 0.188 \\
+ & $-\log_{10}p_{\mathrm{asymp}}$ & 1.978 & 1.999 & 1.789 & 1.930 & 1.887 & 2.134 & 2.526 & 2.268 & 1.740 & 1.652 \\
+ & Fault weight & \textbf{0.018} & \textbf{0.003} & 0.035 & 0.333 & --- & --- & 0.200 & 0.266 & 0.318 & --- \\
+\midrule
+All assays ($\sigma{=}4.0$, 60\%) & ARI retention & 0.484 & \textbf{0.587} & 0.467 & 0.453 & 0.479 & 0.463 & 0.415 & 0.454 & 0.497 & 0.184 \\
+ & $-\log_{10}p_{\mathrm{asymp}}$ & 1.985 & 2.021 & 1.770 & 1.994 & 1.811 & 2.034 & 2.520 & 2.233 & 1.813 & 1.726 \\
+ & Fault weight & \textbf{0.012} & \textbf{0.002} & 0.024 & 0.333 & --- & --- & 0.190 & 0.264 & 0.319 & --- \\
+ & BH-FDR $q$ (vs.\ Null) & 0.010 & --- & 0.005 & 0.010 & 0.020 & 0.010 & 0.005 & 0.010 & 0.177 & $2.2{\times}10^{-6}$ \\
+\bottomrule
+\end{tabular}
+\end{table*}

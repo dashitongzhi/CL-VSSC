@@ -1,0 +1,24 @@
+\begin{table*}[t]
+\centering
+\caption{Single-Cell CITE-seq Benchmark (GSE194122 BMMC, 39--45 Cell Types), Protein ADT Fault ($\sigma=3.0$), and 90{,}261-Cell Scaling ($^\dagger$L4 GPU)}
+\label{tab:p2_singlecell}
+\scriptsize
+\renewcommand{\arraystretch}{1.14}
+\setlength{\tabcolsep}{2.0pt}
+\begin{tabular}{lccccccc}
+\toprule
+Method & \shortstack{BMMC-Site1\\($32{,}004$, NMI/ACC)} & \shortstack{BMMC-Site2\\($25{,}161$, NMI/ACC)} & \shortstack{BMMC-10k\\(NMI/ACC)} & \shortstack{BMMC-30k\\(NMI/ACC)} & \shortstack{BMMC-10k ADT Fault\\($\sigma=3$, ARI/ACC)} & \shortstack{ADT Fault\\$w_{\mathrm{ADT}}$} & \shortstack{90{,}261 Cells\\Time (s) / MB} \\
+\midrule
+CL-VSSC-Anchor & 0.586 / 0.325 & 0.668 / 0.394 & 0.588 / 0.308 & 0.585 / 0.312 & \textbf{0.169} / \textbf{0.282} & 0.317 & 16.57 / 5,295 \\
+Anchor (Local PI) & 0.585 / 0.319 & 0.667 / 0.401 & 0.592 / 0.312 & 0.587 / 0.316 & 0.156 / 0.276 & 0.324 & 21.71$^\dagger$ / 5,434 \\
+Anchor (Local+Null) & 0.587 / 0.324 & 0.668 / 0.394 & 0.593 / 0.316 & 0.586 / 0.319 & 0.157 / 0.279 & 0.299 & 22.08$^\dagger$ / 5,434 \\
+Anchor (Null-SNR) & 0.589 / 0.328 & 0.668 / 0.397 & 0.591 / 0.313 & 0.583 / 0.313 & 0.166 / 0.279 & 0.294 & --- \\
+Anchor (DZ-PI) & 0.596 / 0.324 & 0.673 / 0.397 & 0.599 / 0.315 & 0.597 / 0.319 & 0.123 / 0.227 & 0.500 & --- \\
+Anchor (w/o FB) & 0.597 / 0.326 & 0.674 / 0.402 & 0.614 / 0.338 & 0.609 / 0.334 & 0.123 / 0.227 & 0.500 & --- \\
+LMVSC & 0.603 / 0.336 & 0.666 / 0.382 & 0.600 / 0.325 & 0.603 / 0.331 & 0.162 / 0.274 & --- & 7.06 / 2,141 \\
+Seurat-WNN & 0.609 / 0.340 & 0.680 / 0.398 & 0.618 / 0.334 & 0.614 / 0.340 & 0.155 / 0.270 & 0.494 & --- \\
+Attention-MOAE & 0.616 / 0.341 & 0.683 / 0.404 & 0.633 / 0.347 & 0.624 / 0.361 & 0.051 / 0.108 & 0.866 & --- \\
+Subtype-GAN & 0.583 / 0.331 & 0.650 / 0.438 & 0.548 / 0.313 & 0.568 / 0.341 & 0.087 / 0.122 & --- & 36.40 / 805 \\
+\bottomrule
+\end{tabular}
+\end{table*}

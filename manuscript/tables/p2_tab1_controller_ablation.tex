@@ -1,0 +1,20 @@
+\begin{table*}[t]
+\centering
+\caption{Closed-Loop Controller and Sensor Ablation on 10 TCGA Cohorts and $\sigma=4.0$ Multi-Modal Sensor Faults}
+\label{tab:p2_ablation}
+\scriptsize
+\renewcommand{\arraystretch}{1.14}
+\setlength{\tabcolsep}{3.0pt}
+\begin{tabular}{lcccccccc}
+\toprule
+Variant & \shortstack{Clean Sig.\\($p_{\mathrm{perm}}{<}0.05$)} & \shortstack{Clean Mean\\$-\log_{10}p_{\mathrm{perm}}$} & \shortstack{Clean Med.\\$-\log_{10}p_{\mathrm{perm}}$} & \shortstack{Clean\\Silhouette} & \shortstack{$k$-Sweep\\(/40)} & \shortstack{BIC Fault\\$w_{\mathrm{mRNA}}$} & \shortstack{Fault Mean\\$w_{\mathrm{corr}}$} & \shortstack{Fault ARI\\(36 runs)} \\
+\midrule
+CL-VSSC (Smooth PI) & \textbf{5/10} & 1.299 & 1.248 & 0.509 & \textbf{23/40} & 0.011 & 0.012 & 0.484 \\
+CL-VSSC (Null-SNR) & 3/10 & 1.223 & 0.882 & \textbf{0.516} & 21/40 & \textbf{0.001} & \textbf{0.002} & \textbf{0.587} \\
+CL-VSSC (DZ-PI) & 4/10 & 1.183 & 0.845 & 0.499 & 20/40 & 0.021 & 0.024 & 0.467 \\
+P-only & 4/10 & 1.218 & 0.809 & 0.499 & --- & 0.031 & --- & --- \\
+w/o Feedback & 4/10 & 1.534 & 1.220 & 0.497 & --- & 0.333 & 0.333 & 0.453 \\
+w/o SpecCtrl & 4/10 & 1.205 & 0.887 & 0.481 & --- & --- & --- & --- \\
+\bottomrule
+\end{tabular}
+\end{table*}

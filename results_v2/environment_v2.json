@@ -1,0 +1,43 @@
+{
+  "python_version": "3.13.16",
+  "torch_version": "2.14.1+cu130",
+  "lifelines_version": "0.30.3",
+  "cuda_available": true,
+  "gpu_name": "NVIDIA A100-SXM4-40GB",
+  "cpu_count": 12,
+  "stage_a_sec": 5086.15,
+  "singlecell_datasets": {
+    "BMMC-Site1": {
+      "n_cells": 32004,
+      "n_classes": 40,
+      "d_rna": 2000,
+      "d_adt": 134,
+      "label_col": "cell_type"
+    },
+    "BMMC-Site2": {
+      "n_cells": 25161,
+      "n_classes": 39,
+      "d_rna": 2000,
+      "d_adt": 134,
+      "label_col": "cell_type"
+    },
+    "BMMC-10k": {
+      "n_cells": 10000,
+      "n_classes": 45,
+      "d_rna": 2000,
+      "d_adt": 134,
+      "label_col": "cell_type"
+    },
+    "BMMC-30k": {
+      "n_cells": 30000,
+      "n_classes": 45,
+      "d_rna": 2000,
+      "d_adt": 134,
+      "label_col": "cell_type"
+    },
+    "BMMC-Full": {
+      "n_cells": 90261,
+      "n_features": 14087
+    }
+  }
+}

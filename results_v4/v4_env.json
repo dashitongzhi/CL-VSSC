@@ -1,0 +1,31 @@
+{
+  "gpu_name": "NVIDIA A100-SXM4-80GB",
+  "nvidia_smi": "NVIDIA A100-SXM4-80GB, 81920 MiB, 580.82.07",
+  "cuda_version": "13.0",
+  "torch_version": "2.14.1+cu130",
+  "python_version": "3.13.16",
+  "v4_elapsed_sec": 980.04,
+  "v41_summary": {
+    "n_points": 536,
+    "dz0_regime_counts": {
+      "Collapse / Unstable": 151,
+      "Convergent": 45,
+      "Under-Actuated / Stalled": 36,
+      "Oscillatory": 10
+    }
+  },
+  "v42_summary": {
+    "scale_summary": {
+      "CL-VSSC-Anchor (Smooth PI)": {
+        "runtime_power_alpha": 0.3106,
+        "runtime_loglog_r2": 0.8211,
+        "vram_power_alpha": 0.9955
+      },
+      "CL-VSSC-Anchor (Local PI)": {
+        "runtime_power_alpha": 0.3077,
+        "runtime_loglog_r2": 0.8342,
+        "vram_power_alpha": 0.9955
+      }
+    }
+  }
+}
