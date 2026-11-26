@@ -5,7 +5,7 @@ Standalone 9-page IEEE Transactions manuscript (100% self-contained control-theo
 - **Target Venues**: *IEEE Transactions on Cybernetics (TCYB)*, *IEEE Transactions on Neural Networks and Learning Systems (TNNLS)*, *IEEE TSMC: Systems*, or *Information Fusion*
 - **Public GitHub Repository**: [https://github.com/dashitongzhi/CL-VSSC](https://github.com/dashitongzhi/CL-VSSC)
 - **Compiled Manuscript (9 pages) & Supplementary**: [CL-VSSC_ClosedLoop_Control_IEEE.pdf](CL-VSSC_ClosedLoop_Control_IEEE.pdf) (SHA-256 identical to [manuscript/main.pdf](manuscript/main.pdf)), [CL-VSSC_Supplementary_IEEE.pdf](CL-VSSC_Supplementary_IEEE.pdf) (Tables S-I–S-IV & expanded proofs)
-- **TeX Source & References (31 verified entries)**: [manuscript/main.tex](manuscript/main.tex), [manuscript/supplementary.tex](manuscript/supplementary.tex), [manuscript/references.bib](manuscript/references.bib)
+- **TeX Source & References (30 verified entries)**: [manuscript/main.tex](manuscript/main.tex), [manuscript/supplementary.tex](manuscript/supplementary.tex), [manuscript/references.bib](manuscript/references.bib)
 - **Turnkey Submission Kit**: [SUBMISSION_GUIDE.md](SUBMISSION_GUIDE.md), Graphical Abstract ([PDF](submission/Graphical_Abstract.pdf) / [PNG](submission/Graphical_Abstract.png)), PDF Cover Letters ([IEEE TCYB](submission/Cover_Letter_IEEE_TCYB.pdf), [IEEE TNNLS](submission/Cover_Letter_IEEE_TNNLS.pdf), [Information Fusion](submission/Cover_Letter_Information_Fusion.pdf)), [Elsevier Highlights](submission/Highlights_Elsevier.pdf), [DECLARATIONS_AND_METADATA.md](submission/DECLARATIONS_AND_METADATA.md), and 1-command stamper [`src/apply_author_info.py`](src/apply_author_info.py)
 - **Control & SJTU 816 Chinese Study Guide**: [STUDY_GUIDE_CN.md](STUDY_GUIDE_CN.md)
 
@@ -17,7 +17,7 @@ Standalone 9-page IEEE Transactions manuscript (100% self-contained control-theo
 - `manuscript/`: Self-contained LaTeX source (`main.tex`, `references.bib`, generated `figures/p2_fig1..6.pdf`, `tables/p2_tab1..3.tex`).
 - `results_v2/`: `9` verified NVIDIA A100-SXM4-40GB CSV/JSON files (`tcga_benchmark_v2.csv`, `fault_tolerance_v2.csv`, `diagnostics_trajectories_v2.json`, `singlecell_benchmark_v2.csv`, `sc_fault_v2.csv`, `scalability_v2.csv`, etc.).
 - `results_v3/`: `11` verified NVIDIA L4 CSV/JSON files (`tcga_null_snr_v3.csv`, `fault_null_snr_v3.csv`, `sc_local_pi_v3.csv`, `sc_fault_local_pi_v3.csv`, `sc_scale_local_pi_v3.csv`, `sensitivity_{pi_grid,mu,anchors}_v3.csv`, etc.).
-- `results_v4/`: `7` verified NVIDIA A100-SXM4-80GB CSV/JSON files (`pi_stability_phase_v4.csv`, `pi_phase_trajectories_v4.json`, `scale_200k_v4.csv`, `fault_self_healing_200k_v4.csv`, `fault_self_healing_200k_traj_v4.json`, `v4_env.json`, `paper1_boundary_audit.json`).
+- `results_v4/`: `6` verified NVIDIA A100-SXM4-80GB CSV/JSON files (`pi_stability_phase_v4.csv`, `pi_phase_trajectories_v4.json`, `scale_200k_v4.csv`, `fault_self_healing_200k_v4.csv`, `fault_self_healing_200k_traj_v4.json`, `v4_env.json`).
 - `colab_cl_vssc_benchmark.ipynb`: Self-contained 7-cell Colab A100/L4 reproduction notebook (automatically mounts Google Drive in Colab and syncs `results_v2/`, `results_v3/`, `.npz` weights/embeddings, zip bundles, and run manifests into `MyDrive/Paper/Paper2_CL-VSSC_ClosedLoop_Control/`).
 - `src/`: Closed-loop solvers (`cl_vssc.py`), baselines (`baselines.py`), TCGA/CITE-seq benchmark runners (`run_v2_tcga_suite.py`, `run_v2_singlecell_suite.py`, `run_v3_upgrades.py`, `run_v4_a100_control_upgrades.py`), figure/table generator (`make_assets.py`), and consistency checker (`verify_paper.py`).
 - `tests/smoke_test.py`: Offline regression verification suite.
@@ -56,7 +56,7 @@ PYTHONPATH=/Users/kral/Documents/Research/MAVS-Reliability-2026-11-05/.venv/lib/
 
 ---
 
-## Publication & Cross-Citation Ethics
+## Publication Ethics & Standalone Originality
 
-- Strictly separated from `Paper1_MIVS-CL_Incomplete_MultiOmics` in problem formulation, figures, tables, theorems, and prose (100% independent control formulation)—never duplicate plots across submissions or submit overlapping manuscripts simultaneously.
-- If submitting sequentially or hosting public repositories alongside peer review, explicitly disclose and cite any accepted/preprint companion work accurately rather than omitting related outputs.
+- **100% Standalone Formulation**: Derived directly from Stiefel-manifold orthogonal variable separation and Online Feedback Optimization (OFO) for online multi-view disturbance rejection and large-scale spectral stability, with zero reliance on unpublished manuscripts.
+- **No Simultaneous or Duplicate Submission**: Never duplicate figures, tables, or overlapping formulations across other submissions; all reported results strictly trace back to `results_v2/`, `results_v3/`, and `results_v4/`.

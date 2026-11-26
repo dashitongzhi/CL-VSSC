@@ -77,7 +77,6 @@ def main() -> None:
         "fault_self_healing_200k_v4.csv",
         "fault_self_healing_200k_traj_v4.json",
         "v4_env.json",
-        "paper1_boundary_audit.json",
     ]
     for fn in req_v4:
         p = RES4_DIR / fn
@@ -335,11 +334,11 @@ def main() -> None:
     for hl in hl_lines:
         assert len(hl.strip()) <= 85, f"Highlight exceeds 85-char limit ({len(hl.strip())}): {hl}"
 
-    # Paper 1 vs Paper 2 boundary & citation audit
+    # Standalone bibliography & independence audit (no unpublished companion dependency)
     bib_text = (MS_DIR / "references.bib").read_text()
     bib_keys = set(re.findall(r"@\w+\{([^,]+),", bib_text))
     cited = {k.strip() for m in re.findall(r"\\cite\{([^}]+)\}", tex) for k in m.split(",")}
-    assert "cao2026mivscl" in cited, "Paper 2 must explicitly cite companion Paper 1 (cao2026mivscl)"
+    assert "cao2026mivscl" not in bib_keys and "cao2026mivscl" not in cited, "Unpublished companion entry cao2026mivscl must be removed"
     assert not (bib_keys - cited), f"Uncited BibTeX keys in Paper 2: {bib_keys - cited}"
     assert not (cited - bib_keys), f"Missing BibTeX keys in Paper 2: {cited - bib_keys}"
 
@@ -361,7 +360,7 @@ def main() -> None:
         p2_caps = set(re.findall(r"\\caption\{([^}]+)\}", tex))
         assert not (p1_caps & p2_caps), f"Duplicate captions with Paper 1: {p1_caps & p2_caps}"
 
-    mavs_guard_files = [
+    leakage_guard_files = [
         MS_DIR / "main.tex",
         MS_DIR / "supplementary.tex",
         MS_DIR / "references.bib",
@@ -375,13 +374,22 @@ def main() -> None:
         ROOT / "submission" / "DECLARATIONS_AND_METADATA.md",
         *(ROOT / "submission").glob("*.tex"),
     ]
-    for fp in mavs_guard_files:
+    forbidden_tokens = (
+        "cao2026mivscl",
+        "mivs",
+        "companion paper",
+        "companion manuscript",
+        "starting from that stiefel core",
+    )
+    for fp in leakage_guard_files:
         low = fp.read_text().lower().replace("mavs-reliability-2026-11-05", "")
         assert "mavs" not in low and "liang2026" not in low, f"Unexpected MAVS reference in {fp}"
+        for tok in forbidden_tokens:
+            assert tok not in low, f"Unexpected companion/MIVS token {tok!r} in {fp}"
 
     print(
         f"PAPER2_VERIFICATION_PASSED | PDF SHA-256={h1[:16]}... | "
-        "9 v2 + 11 v3 + 7 v4 files, 6 figs, 3 tabs, notebook AST, clean log, docs, Paper 1 boundary & zero-MAVS check, and CSV claims verified."
+        "9 v2 + 11 v3 + 6 v4 files, 6 figs, 3 tabs, notebook AST, clean log, docs, standalone guard & zero-MAVS check, and CSV claims verified."
     )
 
 

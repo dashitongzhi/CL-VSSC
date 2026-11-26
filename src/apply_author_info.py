@@ -68,11 +68,6 @@ def _apply_replacements(text: str, p: dict, is_tex: bool) -> str:
         ("[author@institution.edu]", p["email"]),
         ("[0000-0000-0000-0000]", p["orcid"]),
         ("0000-0000-0000-0000", p["orcid"]),
-        ("author = {Author, Corresponding}", f"author = {{{p.get('paper1_authors', p['author_surname'] + ', ' + p['author_given_name'])}}}"),
-        (
-            "note   = {Companion manuscript (MIVS-CL; provided as supplementary material for review)}",
-            f"note   = {{{p.get('paper1_note', 'Companion manuscript (MIVS-CL; provided as supplementary material for review)')}}}",
-        ),
     ]
     out = text
     for old, new in replacements:

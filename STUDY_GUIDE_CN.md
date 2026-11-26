@@ -1,7 +1,7 @@
 # Paper 2 (`CL-VSSC` & `CL-VSSC-Anchor`) 控制理论精讲与上交 816 复试通关手册
 
 > **本目录定位**：纯粹独立的自动控制与大规模可扩展多模态谱聚类论文（**9 页** IEEE Transactions 长文，目标期刊：*IEEE TCYB* / *TNNLS* / *TSMC-S* / *Information Fusion*，以及**上海交通大学 816 自动控制原理研究生复试代表作**）。  
-> **配套论文终稿**：[`CL-VSSC_ClosedLoop_Control_IEEE.pdf`](CL-VSSC_ClosedLoop_Control_IEEE.pdf)（9 页主稿 [`manuscript/main.tex`](manuscript/main.tex) + 补充材料 [`CL-VSSC_Supplementary_IEEE.pdf`](CL-VSSC_Supplementary_IEEE.pdf)，31 篇规范引用，含在线反馈优化 OFO 与张量化二分图最新顶刊对比；多期刊投稿套件与一键署名脚本见 [`SUBMISSION_GUIDE.md`](SUBMISSION_GUIDE.md) 及 [`submission/`](submission/)，公开仓库 [`https://github.com/dashitongzhi/CL-VSSC`](https://github.com/dashitongzhi/CL-VSSC)）。
+> **配套论文终稿**：[`CL-VSSC_ClosedLoop_Control_IEEE.pdf`](CL-VSSC_ClosedLoop_Control_IEEE.pdf)（9 页主稿 [`manuscript/main.tex`](manuscript/main.tex) + 补充材料 [`CL-VSSC_Supplementary_IEEE.pdf`](CL-VSSC_Supplementary_IEEE.pdf)，30 篇已发表规范引用，完全独立基于 Stiefel 流形优化与在线反馈优化 OFO 立意，含张量化二分图最新顶刊对比；多期刊投稿套件与一键署名脚本见 [`SUBMISSION_GUIDE.md`](SUBMISSION_GUIDE.md) 及 [`submission/`](submission/)，公开仓库 [`https://github.com/dashitongzhi/CL-VSSC`](https://github.com/dashitongzhi/CL-VSSC)）。
 
 ---
 

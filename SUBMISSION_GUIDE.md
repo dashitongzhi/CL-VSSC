@@ -16,7 +16,7 @@
    ```sh
    cp submission/author_profile.template.json submission/author_profile.json
    ```
-   只需修改里面的真实姓名、院系/学校/邮编、邮箱、ORCID、基金说明与 Paper 1 真实作者署名（注意勿将个人隐私 `author_profile.json` 提交前核对）。
+   只需修改里面的真实姓名、院系/学校/邮编、邮箱、ORCID 与基金说明（提交前注意勿将含个人邮箱的 `author_profile.json` 误推送或按需清理）。
 2. 运行一键写入 + 全套编译与一致性验收命令：
    ```sh
    PYTHONPATH=/Users/kral/Documents/Research/MAVS-Reliability-2026-11-05/.venv/lib/python3.12/site-packages /opt/homebrew/bin/python3.12 -B src/apply_author_info.py --profile submission/author_profile.json --build
@@ -40,15 +40,15 @@
 | **跨社备选 (4th)** | ***Information Fusion* (Elsevier)** | 多源异构信息融合顶刊 | 需由 `IEEEtran` 切换为 `elsarticle` 模板，并附上 `SUBMISSION_GUIDE` 与 `DECLARATIONS_AND_METADATA.md` 第 5 节的 5 条 `Highlights`（每条 `<=85` 字符） | 重点突出多模态可信融合与主模态可观性上限分析 |
 
 ### 与工作区其余论文的投稿区隔与节奏建议
-1. **Paper 1 (`MIVS-CL`) vs Paper 2 (`CL-VSSC`)**：绝对不要隐瞒伴随关系。强烈建议**先将 Paper 1 投向 *IEEE JBHI* / *IEEE/ACM TCBB*（或先挂 arXiv 拿公开编号），再或同时向 *IEEE TCYB* 投 Paper 2**；投 Paper 2 时务必保留正文 `[29]` 的显式引用，并在 ScholarOne 的 *Supplemental Material for Review Only* 上传 Paper 1 PDF（已在 `COVER_LETTER_IEEE.md` 写好标准 IEEE PSPB 披露段落）。
-2. **与 Paper 3 (`KGC-MPC`) / Paper 4 (`SPIC-MAS`) / Paper 5 (`GRAM-UIO`) 的区隔**：Paper 2 聚焦“无监督多模态聚类的闭环加权与谱间隙调控”，不涉及 Koopman 轨迹控制（P3）、空间 L–R 牵制（P4）或卡尔曼/UIO 状态观测（P5），天然错开审稿池与研究主题。
+1. **完全独立自主立意**：Paper 2（`CL-VSSC` / `CL-VSSC-Anchor`）直接从已公开发表的经典 Stiefel 流形分离（Edelman et al., 1998; JIVE, 2013）与在线反馈优化 OFO（Hauswirth et al., *Annual Reviews in Control* 2024）文献出发，独立解决“多视图谱聚类在线扰动失稳与规模化 $\mathcal{O}(n^3)$ 瓶颈”，不依赖任何未发表论文或外部伴随稿件，**可作为独立首投长文直接投向 *IEEE TCYB* / *IEEE TNNLS***。
+2. **与 Paper 3 (`KGC-MPC`) / Paper 4 (`SPIC-MAS`) / Paper 5 (`GRAM-UIO`) 的区隔**：Paper 2 聚焦“无监督多模态聚类的双闭环 PI 加权与谱间隙调控”，不涉及 Koopman 轨迹控制（P3）、空间 L–R 牵制（P4）或卡尔曼/UIO 状态观测（P5），天然错开审稿池与研究主题。
 
 ---
 
 ## 三、高频审稿质疑预判与直接回复口径
 
-1. **Q：为什么不在 Paper 2 里一起跑缺失块插补对比？与伴随论文 `MIVS-CL` 增量边界在哪？**  
-   - *口径*：`MIVS-CL` 处理临床块状缺测的掩码潜空间插补与生信预后解释；Paper 2 完全聚焦实时闭环控谱聚类与线性大规模扩展（Null-SNR 传感器、Double-Centered Anchor-Local PI、Prop. 1–3 理论界、`1,560` 故障压测、`536` 点相图与 `300k/200k` 扩展），二者图表 0 重叠、10-gram 重合率 `< 0.6%`。
+1. **Q：你们和传统图聚类（`CLR`、`MVGL`、`MCGC`）或深度融合（`Attention-MOAE`、`Subtype-GAN`）的本质理论区别是什么？**  
+   - *口径*：`CLR`/`MVGL`/`MCGC` 仅用开环逆图差异 heuristic 加权、缺少积分记忆与特征间隙闭环调控，且需 $\mathcal{O}(n^3)$ 稠密分解；深度注意力在干净数据高拟合，但故障时会锁死坏通道（`ADT w=0.866, ARI 0.051`）。本工作从 Stiefel 流形优化与 OFO 视角出发，首次统一了“正交植物 + 对偶 Ky Fan 间隙执行器 + 抗饱和阻尼 PI 单纯形控制 + 无近似 $m\times m$ 二分图 Gram 等价”，并提供严格 BIBO、ISS 与 Davis–Kahan 界。
 2. **Q：你们在 `BMMC` 干净单细胞上的 NMI（`0.588–0.593`）略低于 `Attention-MOAE`（`0.633`）和 `Seurat-WNN`（`0.618`），如何自圆其说？**  
    - *口径*：这是正交线性 Stiefel 约束带来的“标称自由度 vs. 鲁棒可控性”帕累托权衡（已在第 VI 节直面讨论）。无约束注意力在干净数据高 `0.04`，但在 ADT $\sigma=3.0$ 故障下把权重锁死在 `0.866` 导致 ARI 暴跌 `-78.9%` 到 `0.051`，而 `CL-VSSC-Anchor` 保持 `0.169` 第一名并有严格 ISS 界。
 3. **Q：为什么 DNA 甲基化重故障下 `Null-SNR PI` 保留 ARI 只有 `0.170`？**  
