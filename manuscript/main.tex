@@ -15,8 +15,8 @@
 \renewcommand{\dbltopfraction}{0.82}
 \renewcommand{\dblfloatpagefraction}{0.75}
 \renewcommand{\textfraction}{0.08}
-\setlength{\dbltextfloatsep}{7pt plus 2pt minus 2pt}
-\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{6pt plus 1.5pt minus 1.5pt}
+\setlength{\textfloatsep}{7pt plus 1.5pt minus 1.5pt}
 \setlength{\abovecaptionskip}{3pt}
 
 \newtheorem{proposition}{Proposition}
@@ -215,7 +215,7 @@ Enabling \textbf{Null-SNR PI} highlights a sensor gain trade-off. Normalizing cu
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=0.80\textwidth]{figures/p2_fig4_singlecell_scale.pdf}
+    \includegraphics[width=0.78\textwidth]{figures/p2_fig4_singlecell_scale.pdf}
     \caption{NeurIPS GSE194122 single-cell CITE-seq validation ($90{,}261$ BMMCs, $39\text{--}45$ cell types). (a) Clean multi-site NMI. (b) \texttt{BMMC-10k} ADT fault test ($\sigma \in [0,3]$): CL-VSSC-Anchor leads all competitors ($\mathrm{ARI}=0.169$) while Attention-MOAE collapses ($0.051$). (c)--(d) Log--log GPU runtime and peak VRAM scaling ($1{,}000 \rightarrow 90{,}261$ cells).}
     \label{fig:p2_singlecell}
 \end{figure*}
@@ -240,7 +240,7 @@ Fig.~\ref{fig:p2_sensitivity} sweeps all three controller hyperparameters to tes
 \subsection{PI Gain Stability Phase Diagram and 200k--300k Self-Healing}
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=0.81\textwidth]{figures/p2_fig6_stability_phase_200k.pdf}
+    \includegraphics[width=0.79\textwidth]{figures/p2_fig6_stability_phase_200k.pdf}
     \caption{A100-80GB closed-loop stability boundaries and $200\text{k}\text{--}300\text{k}$ self-healing verification. (a) $(K_p, \kappa_I)$ stability phase diagram on BIC ($\delta_{\mathrm{dz}}=0$; default operating point boxed). (b) Representative mRNA fault trajectories and dead-zone $\delta_{\mathrm{dz}}$ margin shift (inset, $98$ BIC+KIRC points per bar). (c) Log--log scaling across $10\text{k}\text{--}300\text{k}$ cells (\texttt{GSE194122} real up to $90.3\text{k}$, \texttt{GSE194122-\allowbreak Expanded} $150\text{k}\text{--}300\text{k}$). (d) $N=200{,}000$ mid-stream ADT step-fault self-healing ($t=10$, $\sigma=3.0$, $50\%$ drop).}
     \label{fig:p2_phase_200k}
 \end{figure*}
