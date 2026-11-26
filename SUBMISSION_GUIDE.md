@@ -1,34 +1,32 @@
 # Paper 2 (`CL-VSSC`) 投递操作与期刊战略指南
 
-> **现状总览**：除个人实名信息外，技术审稿与开源仓全套材料已完备。  
+> **现状总览**：除个人实名信息外，技术审稿、多期刊直接上传件、Graphical Abstract、Supplementary Material 与开源仓已**100% 完备**。  
 > - **公开代码仓**：[`https://github.com/dashitongzhi/CL-VSSC`](https://github.com/dashitongzhi/CL-VSSC)  
-> - **9 页 `IEEEtran` 终稿**：[`CL-VSSC_ClosedLoop_Control_IEEE.pdf`](CL-VSSC_ClosedLoop_Control_IEEE.pdf)  
-> - **英文投稿信**：[`submission/COVER_LETTER_IEEE.md`](submission/COVER_LETTER_IEEE.md)  
-> - **投稿系统复制粘贴库**：[`submission/DECLARATIONS_AND_METADATA.md`](submission/DECLARATIONS_AND_METADATA.md)
+> - **9 页 `IEEEtran` 主稿 & 补充材料 PDF**：[`CL-VSSC_ClosedLoop_Control_IEEE.pdf`](CL-VSSC_ClosedLoop_Control_IEEE.pdf) & [`CL-VSSC_Supplementary_IEEE.pdf`](CL-VSSC_Supplementary_IEEE.pdf)  
+> - **可视化摘要（Graphical Abstract）**：[`submission/Graphical_Abstract.pdf`](submission/Graphical_Abstract.pdf) / [`PNG (300 DPI)`](submission/Graphical_Abstract.png)  
+> - **多顶刊排版好的 PDF Cover Letter & 附件**：[`Cover_Letter_IEEE_TCYB.pdf`](submission/Cover_Letter_IEEE_TCYB.pdf) / [`Cover_Letter_IEEE_TNNLS.pdf`](submission/Cover_Letter_IEEE_TNNLS.pdf) / [`Cover_Letter_Information_Fusion.pdf`](submission/Cover_Letter_Information_Fusion.pdf) / [`Highlights_Elsevier.pdf`](submission/Highlights_Elsevier.pdf) / [`Declaration_of_Interest_Elsevier.pdf`](submission/Declaration_of_Interest_Elsevier.pdf)  
+> - **一键填署名自动化脚本**：[`submission/author_profile.template.json`](submission/author_profile.template.json) + [`src/apply_author_info.py`](src/apply_author_info.py)
 
 ---
 
-## 一、投前 3 分钟个人填空清单（仅余这些 `TODO(PERSONAL_INFO)`）
+## 一、投前 1 分钟一键替换个人实名信息（推荐流程）
 
-在点击期刊系统 `Submit` 之前，全局搜索 `TODO(PERSONAL_INFO)`，只需替换以下 4 处个人信息：
+**方法 A（推荐，一条命令自动替换全部文件并重编全部 PDF）：**
+1. 复制模板文件并填写真实个人信息：
+   ```sh
+   cp submission/author_profile.template.json submission/author_profile.json
+   ```
+   只需修改里面的真实姓名、院系/学校/邮编、邮箱、ORCID、基金说明与 Paper 1 真实作者署名（注意勿将个人隐私 `author_profile.json` 提交前核对）。
+2. 运行一键写入 + 全套编译与一致性验收命令：
+   ```sh
+   PYTHONPATH=/Users/kral/Documents/Research/MAVS-Reliability-2026-11-05/.venv/lib/python3.12/site-packages /opt/homebrew/bin/python3.12 -B src/apply_author_info.py --profile submission/author_profile.json --build
+   git add -A && git commit -m "chore: populate author and affiliation metadata" && git push origin main
+   ```
 
-1. **[`manuscript/main.tex`](manuscript/main.tex)**：
-   - 第 `24` 行 `\markboth`：把 `[Author Surname]` 改为第一作者姓氏（若不投 *IEEE TCYB*，顺手改期刊英文名）。
-   - 第 `31–33` 行 `\author` 与 `\thanks`：填写真实 `[Author Full Name]`、`[Department / School]`、`[University / Institution]`、`[City] [Postal Code], [Country]`、`[author@institution.edu]`、`[0000-0000-0000-0000]` 及基金号（无基金直接删掉基金那句 `\thanks`）。
-   - 第 `274–278` 行（可选）：若目标刊要求初始投稿附带作者简介，取消注释 `IEEEbiography` 并填入个人简历与证件照。
-2. **[`manuscript/references.bib`](manuscript/references.bib)**：
-   - 第 `318–325` 行 `cao2026mivscl`：把 `Author, Corresponding` 替换为 Paper 1（`MIVS-CL`）的真实作者署名；若 Paper 1 已挂 arXiv，把 arXiv 编号填进 `note` 字段。
-3. **[`submission/COVER_LETTER_IEEE.md`](submission/COVER_LETTER_IEEE.md)**：
-   - 替换开头日期 `[TODO(PERSONAL_INFO): Date]` 与文末通讯作者署名、单位、地址、邮箱和 ORCID。
-4. **[`submission/DECLARATIONS_AND_METADATA.md`](submission/DECLARATIONS_AND_METADATA.md)**：
-   - 确认基金资助声明与 CRediT 作者贡献列表。
+**方法 B（手工检索 `TODO(PERSONAL_INFO)`）：**
+全局检索 `TODO(PERSONAL_INFO)` 亦可定位所有占位，对应文件包括 [`manuscript/main.tex`](manuscript/main.tex)、[`manuscript/supplementary.tex`](manuscript/supplementary.tex)、[`manuscript/references.bib`](manuscript/references.bib)、[`CITATION.cff`](CITATION.cff) 与 [`submission/`](submission/) 内的 Cover Letter 源码。
 
-改完上述 4 处后，本地执行一次 PDF 重编译并推送更新即可直接上传投稿系统：
-```sh
-cd manuscript && tectonic --keep-logs main.tex && cp main.pdf ../CL-VSSC_ClosedLoop_Control_IEEE.pdf && cd ..
-PYTHONPATH=/Users/kral/Documents/Research/MAVS-Reliability-2026-11-05/.venv/lib/python3.12/site-packages /opt/homebrew/bin/python3.12 -B src/verify_paper.py
-git add -A && git commit -m "chore: populate author and affiliation metadata" && git push origin main
-```
+改完上述信息后，[`submission/IEEE_LaTeX_Source_Submission.zip`](submission/) 会由 `src/build_submission_bundle.py` 自动刷新（含 `main.tex`、`supplementary.tex`、`references.bib`、全部图/表，直接传 ScholarOne TeX Source 包即可）。
 
 ---
 

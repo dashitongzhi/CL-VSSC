@@ -1,0 +1,24 @@
+\begin{table*}[t]
+\centering
+\caption{Methodological Mechanism, Asymptotic Complexity, and Fixed Control Parameters}
+\label{tab:p2_stab1}
+\scriptsize
+\renewcommand{\arraystretch}{1.14}
+\setlength{\tabcolsep}{2.4pt}
+\begin{tabular}{lllll}
+\toprule
+Method & Weighting / Fusion Mechanism & Time Complexity & Memory & Control Guarantees / Role \\
+\midrule
+SNF \cite{wang2014snf} & Open-loop cross-diffusion & $\mathcal{O}(T_{\mathrm{diff}} n^3)$ & $\mathcal{O}(V n^2)$ & Fixed diffusion; no partition feedback \\
+NEMO \cite{rappoport2019nemo} & Open-loop partial averaging & $\mathcal{O}(n^3)$ & $\mathcal{O}(V n^2)$ & No adaptive modal rejection \\
+MCGC \cite{zhan2019mcgc} & Inverse graph discrepancy & $\mathcal{O}(T n^3)$ & $\mathcal{O}(V n^2)$ & Heuristic weights ($w_{\mathrm{corr}}{=}0.190$ at $\sigma{=}4$) \\
+Subtype-GAN \cite{yang2021subtypegan} & Deep WGAN + GMM latent & $\mathcal{O}(E n d_{\mathrm{tot}} h)$ & $\mathcal{O}(B d_{\mathrm{tot}})$ & Amortized encoder; noise-sensitive \\
+Attention-MOAE \cite{moon2022moma} & Static attention autoencoder & $\mathcal{O}(E n d_{\mathrm{tot}} h)$ & $\mathcal{O}(B d_{\mathrm{tot}})$ & High-variance lock-in ($w_{\mathrm{ADT}}{=}0.866$) \\
+Seurat-WNN \cite{hao2021seuratv4} & Local $k$-NN ratio weights & $\mathcal{O}(V n^2 \log n)$ & $\mathcal{O}(V n k)$ & No integral memory or dual pruning \\
+LMVSC \cite{kang2020lmvsc} & Static anchor subspace fusion & $\mathcal{O}(n m^2 + m^3)$ & $\mathcal{O}(V n m)$ & Linear-time open loop; uniform fusion \\
+\midrule
+CL-VSSC (Dense) & Stiefel + PI + dual $\mu(t)$ & $\mathcal{O}(T(n^3 + \sum_v n d_v r))$ & $\mathcal{O}(V n^2)$ & Exact ISS / DK ($T{=}45$, $t_{\mathrm{warm}}{=}15$) \\
+CL-VSSC-Anchor & Gram + Local/Null PI + $\mu(t)$ & $\mathcal{O}(T(nm^2 + \sum_v n d_v r))$ & $\mathcal{O}(Vnm + \sum_v nd_v)$ & Exact Prop.~1 ($\mathcal{O}(N^{0.996})$ VRAM) \\
+\bottomrule
+\end{tabular}
+\end{table*}

@@ -1,0 +1,49 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=0.92in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\emergencystretch=1.5em
+\pagestyle{empty}
+
+\begin{document}
+
+[TODO(PERSONAL\_INFO): Date, e.g., November 27, 2026]
+
+\vspace{6pt}
+To the Editor-in-Chief and Editorial Board\\
+\textit{IEEE Transactions on Neural Networks and Learning Systems}
+
+\vspace{6pt}
+Dear Editor-in-Chief and Associate Editors,
+
+We submit our manuscript entitled \textbf{``Closed-Loop Proportional--Integral Feedback and Linear-Time Bipartite Spectral Control for Fault-Tolerant Multi-Modal Clustering''} for consideration as a Regular Paper in \textit{IEEE Transactions on Neural Networks and Learning Systems}.
+
+Multi-modal representation learners and deep attention fusion architectures (\texttt{Attention-MOAE}, \texttt{Subtype-GAN}) perform strongly on curated benchmarks yet mostly operate in open loop, leaving them vulnerable to static noisy-modality lock-in when sensors fail. Formulating spectral graph fusion through online feedback optimization (OFO), we develop a discrete-time dual closed-loop controller (\textbf{CL-VSSC}) and its linear-time bipartite landmark extension (\textbf{CL-VSSC-Anchor}, $\mathcal{O}(nm^2 + ndr)$) with provable stability guarantees over Stiefel manifolds and probability simplices.
+
+\textbf{Highlights for \textit{IEEE TNNLS} Readership:}
+\begin{enumerate}\setlength{\itemsep}{2pt}
+    \item \textbf{Closed-loop safeguard against deep attention lock-in:} On the $90{,}261$-cell NeurIPS \texttt{GSE194122} CITE-seq atlas, \texttt{Attention-MOAE} assigns static high weight to surface ADT ($0.866\text{--}0.891$) and loses $78.9\%$ ARI under ADT corruption ($0.051$), whereas CL-VSSC-Anchor downweights corrupted sensors bidirectionally and leads all baselines ($\mathrm{ARI}=0.169$, $p=0.0156$).
+    \item \textbf{Exact linear-time Anchor Gram equivalence:} Proposition~1 computes the bottom-$c$ eigenvectors of the implicit two-hop Laplacian identically via an $m \times m$ Gram matrix, accelerating $10{,}000$-cell A100 runtime $20.3\times$, cutting VRAM $13.3\times$, and scaling linearly ($\mathcal{O}(N^{0.996})$ VRAM) up to $300{,}000$ cells ($<54\text{ s}$).
+    \item \textbf{Formal ISS, Davis--Kahan, and gain-margin verification:} Propositions~2--3 establish anti-windup BIBO bounds, exponential fault rejection $\exp(-(1+\kappa_I)\Delta e/\tau)$, and local ISS bounds validated across $536$ $(K_p,K_i,\delta_{\mathrm{dz}})$ phase points and $200{,}000$-cell $7$-iteration step-fault recovery.
+    \item \textbf{Statistically verified multi-omics stress robustness:} Across 1,560 TCGA three-modality stress runs, Smooth PI ($0.012$) and Null-SNR PI ($0.002$) achieve $36/36$ faulty-weight suppression wins (BH-FDR $q=1.46 \times 10^{-11}$) and $0.796$ ARI on mRNA/miRNA faults ($q \le 6.19 \times 10^{-4}$).
+\end{enumerate}
+
+\textbf{Disclosure of Companion Work and Originality (IEEE PSPB Compliance):}
+This manuscript is original, unpublished, and not under simultaneous review elsewhere. In accordance with IEEE PSPB policy, we explicitly cite and disclose our companion manuscript~[29] (\textit{MIVS-CL}), which targets missing-block clinical imputation and cancer bioinformatics analysis, whereas the present manuscript introduces closed-loop PI control, Null-SNR calibration, Anchor Gram equivalence, double-centered Anchor-Local PI, formal ISS/Davis--Kahan theory, 536-point stability maps, and 90k--300k CITE-seq benchmarks ($<0.6\%$ 10-gram overlap, zero shared figures/tables). MIVS-CL and our \textit{Supplementary Material} PDF are provided for review transparency.
+
+\textbf{Reproducibility and Conflict of Interest:}
+Code, Colab notebooks, and benchmark archives are publicly available under the MIT license at \url{https://github.com/dashitongzhi/CL-VSSC}. The authors declare no conflicts of interest.
+
+\vspace{6pt}
+Sincerely,
+
+\textbf{[TODO(PERSONAL\_INFO): Author Full Name]}\\
+{[TODO(PERSONAL\_INFO): Title, Department / School, University / Institution]}\\
+{[TODO(PERSONAL\_INFO): City, Postal Code, Country]}\\
+E-mail: \texttt{[TODO(PERSONAL\_INFO): author@institution.edu]} \quad ORCID: \texttt{[TODO(PERSONAL\_INFO): 0000-0000-0000-0000]}
+
+\end{document}

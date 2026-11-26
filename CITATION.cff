@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use CL-VSSC or CL-VSSC-Anchor in your research, please cite the accompanying manuscript."
+title: "Closed-Loop Proportional-Integral Feedback and Linear-Time Bipartite Spectral Control for Fault-Tolerant Multi-Modal Clustering"
+type: software
+# TODO(PERSONAL_INFO): Replace placeholder author fields and ORCID below before archival release.
+authors:
+  - family-names: "[Author Surname]"
+    given-names: "[Author Given Name]"
+    orcid: "https://orcid.org/0000-0000-0000-0000"
+repository-code: "https://github.com/dashitongzhi/CL-VSSC"
+url: "https://github.com/dashitongzhi/CL-VSSC"
+license: MIT
+keywords:
+  - closed-loop feedback control
+  - proportional-integral mirror descent
+  - input-to-state stability
+  - bipartite spectral clustering
+  - multi-modal fault tolerance
+  - CITE-seq
+date-released: "2026-11-27"

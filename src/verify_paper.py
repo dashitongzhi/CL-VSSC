@@ -87,6 +87,10 @@ def main() -> None:
         "p2_tab1_controller_ablation.tex",
         "p2_tab2_fault_stress.tex",
         "p2_tab3_singlecell.tex",
+        "p2_stab1_notation_complexity.tex",
+        "p2_stab2_tcga_cohorts.tex",
+        "p2_stab3_wilcoxon_ledger.tex",
+        "p2_stab4_cite_bidirectional.tex",
     ]
     for fn in req_tabs:
         p = MS_DIR / "tables" / fn
@@ -99,11 +103,27 @@ def main() -> None:
         (".gitignore", 100),
         ("LICENSE", 500),
         ("requirements.txt", 40),
+        ("CITATION.cff", 200),
+        ("src/apply_author_info.py", 1000),
+        ("src/build_submission_bundle.py", 1000),
+        ("submission/author_profile.template.json", 200),
         ("submission/COVER_LETTER_IEEE.md", 1500),
         ("submission/DECLARATIONS_AND_METADATA.md", 1500),
+        ("submission/Graphical_Abstract.pdf", 5000),
+        ("submission/Graphical_Abstract.png", 10000),
+        ("submission/Cover_Letter_IEEE_TCYB.pdf", 5000),
+        ("submission/Cover_Letter_IEEE_TNNLS.pdf", 5000),
+        ("submission/Cover_Letter_Information_Fusion.pdf", 5000),
+        ("submission/Highlights_Elsevier.pdf", 3000),
+        ("submission/Declaration_of_Interest_Elsevier.pdf", 3000),
     ]:
         doc_path = ROOT / doc_name
         assert doc_path.is_file() and doc_path.stat().st_size > min_bytes, f"Missing/short {doc_name}"
+
+    supp_pdf = MS_DIR / "supplementary.pdf"
+    root_supp_pdf = ROOT / "CL-VSSC_Supplementary_IEEE.pdf"
+    assert supp_pdf.is_file() and root_supp_pdf.is_file(), "Missing compiled Supplementary PDF"
+    assert sha256(supp_pdf) == sha256(root_supp_pdf), "Supplementary PDF hash mismatch"
 
     nb = json.loads((ROOT / "colab_cl_vssc_benchmark.ipynb").read_text())
     code_cells = [c for c in nb["cells"] if c["cell_type"] == "code"]
@@ -117,17 +137,18 @@ def main() -> None:
     h1, h2 = sha256(main_pdf), sha256(root_pdf)
     assert h1 == h2, f"PDF hash mismatch: {h1} vs {h2}"
 
-    log_text = (MS_DIR / "main.log").read_text(errors="ignore")
-    for bad in [
-        "Undefined control sequence",
-        "Reference `",
-        "Citation `",
-        "Overfull \\hbox",
-        "Underfull \\hbox (badness 10000)",
-        "! Emergency stop",
-        "! LaTeX Error",
-    ]:
-        assert bad not in log_text, f"Found {bad!r} in manuscript/main.log"
+    for log_name in ("main.log", "supplementary.log"):
+        log_text = (MS_DIR / log_name).read_text(errors="ignore")
+        for bad in [
+            "Undefined control sequence",
+            "Reference `",
+            "Citation `",
+            "Overfull \\hbox",
+            "Underfull \\hbox (badness 10000)",
+            "! Emergency stop",
+            "! LaTeX Error",
+        ]:
+            assert bad not in log_text, f"Found {bad!r} in manuscript/{log_name}"
 
     summary = pd.read_csv(RES2_DIR / "cohort_summary_v2.csv")
     bench = pd.read_csv(RES2_DIR / "tcga_benchmark_v2.csv")
@@ -205,6 +226,14 @@ def main() -> None:
     assert f"{adt3.loc['CL-VSSC-Anchor', 'gt_ari']:.3f}" == "0.169"
     assert f"{adt3.loc['Attention-MOAE', 'gt_ari']:.3f}" == "0.051"
 
+    sc_fault3 = pd.read_csv(RES3_DIR / "sc_fault_local_pi_v3.csv")
+    rna3 = pd.concat([sc_fault, sc_fault3], ignore_index=True)
+    rna3_g = rna3[(rna3["corrupted_modality"] == "scRNA") & (rna3["noise_sigma"] == 3.0)].groupby("method")[["gt_ari", "w_corrupted"]].mean()
+    assert f"{rna3_g.loc['CL-VSSC-Anchor', 'w_corrupted']:.3f}" == "0.069"
+    assert f"{rna3_g.loc['CL-VSSC-Anchor (Null-SNR)', 'w_corrupted']:.3f}" == "0.060"
+    assert f"{rna3_g.loc['CL-VSSC-Anchor', 'gt_ari']:.3f}" == "0.213"
+    assert f"{1.0 - rna3_g.loc['Attention-MOAE', 'w_corrupted']:.3f}" == "0.891"
+
     anc_90 = scale[(scale["n_cells"] == 90261) & (scale["method"] == "CL-VSSC-Anchor")].iloc[0]
     assert f"{anc_90['runtime_sec']:.2f}" == "16.57"
 
@@ -279,6 +308,9 @@ def main() -> None:
         "0.796",
         "6.19\\times 10^{-4}",
         "0.032",
+        "0.069",
+        "0.060",
+        "0.891",
     ]
     for tok in expected_tokens:
         assert tok in tex, f"Verified metric token {tok!r} missing from manuscript/main.tex"
@@ -331,14 +363,17 @@ def main() -> None:
 
     mavs_guard_files = [
         MS_DIR / "main.tex",
+        MS_DIR / "supplementary.tex",
         MS_DIR / "references.bib",
         *(MS_DIR / "tables").glob("*.tex"),
         ROOT / "src" / "make_assets.py",
         ROOT / "README.md",
         ROOT / "STUDY_GUIDE_CN.md",
         ROOT / "SUBMISSION_GUIDE.md",
+        ROOT / "CITATION.cff",
         ROOT / "submission" / "COVER_LETTER_IEEE.md",
         ROOT / "submission" / "DECLARATIONS_AND_METADATA.md",
+        *(ROOT / "submission").glob("*.tex"),
     ]
     for fp in mavs_guard_files:
         low = fp.read_text().lower().replace("mavs-reliability-2026-11-05", "")

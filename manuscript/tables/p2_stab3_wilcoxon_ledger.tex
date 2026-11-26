@@ -1,0 +1,23 @@
+\begin{table*}[t]
+\centering
+\caption{Complete Paired One-Sided Wilcoxon Signed-Rank $p$ and BH-FDR $q$ Comparison of Null-SNR PI Fault Retention ARI Across Stress Slices}
+\label{tab:p2_stab3}
+\scriptsize
+\renewcommand{\arraystretch}{1.14}
+\setlength{\tabcolsep}{2.2pt}
+\begin{tabular}{lccccc}
+\toprule
+Method (vs.\ Null-SNR) & \shortstack{$\sigma{=}4.0$ ($n{=}36$)\\$\Delta\mathrm{ARI}$ / W--T} & \shortstack{$\sigma{=}4.0$ ($n{=}36$)\\Wilcoxon $p$ / BH $q$} & \shortstack{$\sigma{\in}\{2,4\}$ ($n{=}72$)\\$\Delta\mathrm{ARI}$ / BH $q$} & \shortstack{All $\sigma{>}0$ ($n{=}144$)\\$\Delta\mathrm{ARI}$ / BH $q$} & \shortstack{mRNA+miRNA ($n{=}24$)\\$\Delta\mathrm{ARI}$ / BH $q$} \\
+\midrule
+CL-VSSC (Smooth PI) & $+0.103$ (22/36) & 0.008 / 0.010 & $+0.107$ / $4.2{\times}10^{-4}$ & $+0.101$ / $2.6{\times}10^{-5}$ & $+0.176$ / $1.9{\times}10^{-5}$ \\
+CL-VSSC (DZ-PI) & $+0.120$ (27/36) & 0.001 / 0.005 & $+0.119$ / $8.4{\times}10^{-5}$ & $+0.077$ / $3.2{\times}10^{-4}$ & $+0.230$ / $1.8{\times}10^{-7}$ \\
+CL-VSSC (w/o FB) & $+0.134$ (20/36) & 0.005 / 0.010 & $+0.112$ / 0.001 & $+0.054$ / 0.022 & $+0.263$ / $2.4{\times}10^{-5}$ \\
+SNF & $+0.108$ (21/36) & 0.017 / 0.020 & $+0.100$ / 0.003 & $+0.042$ / 0.042 & $+0.257$ / $1.5{\times}10^{-5}$ \\
+NEMO & $+0.125$ (20/36) & 0.008 / 0.010 & $+0.119$ / $9.4{\times}10^{-4}$ & $+0.053$ / 0.022 & $+0.257$ / $3.6{\times}10^{-5}$ \\
+MCGC & $+0.173$ (24/36) & 0.002 / 0.005 & $+0.168$ / $8.4{\times}10^{-5}$ & $+0.101$ / $3.2{\times}10^{-4}$ & $+0.355$ / $1.8{\times}10^{-7}$ \\
+Seurat-WNN & $+0.133$ (22/36) & 0.006 / 0.010 & $+0.125$ / $5.8{\times}10^{-4}$ & $+0.065$ / 0.007 & $+0.262$ / $1.5{\times}10^{-5}$ \\
+Attention-MOAE & $+0.090$ (21/36) & 0.177 / 0.177 & $+0.085$ / 0.102 & $+0.061$ / 0.115 & $+0.269$ / $6.2{\times}10^{-4}$ \\
+Subtype-GAN & $+0.404$ (27/36) & $2.4{\times}10^{-7}$ / $2.2{\times}10^{-6}$ & $+0.404$ / $5.7{\times}10^{-10}$ & $+0.393$ / $3.8{\times}10^{-19}$ & $+0.600$ / $1.8{\times}10^{-7}$ \\
+\bottomrule
+\end{tabular}
+\end{table*}

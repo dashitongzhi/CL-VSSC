@@ -4,9 +4,9 @@ Standalone 9-page IEEE Transactions manuscript (100% self-contained control-theo
 
 - **Target Venues**: *IEEE Transactions on Cybernetics (TCYB)*, *IEEE Transactions on Neural Networks and Learning Systems (TNNLS)*, *IEEE TSMC: Systems*, or *Information Fusion*
 - **Public GitHub Repository**: [https://github.com/dashitongzhi/CL-VSSC](https://github.com/dashitongzhi/CL-VSSC)
-- **Compiled Manuscript (9 pages)**: [CL-VSSC_ClosedLoop_Control_IEEE.pdf](CL-VSSC_ClosedLoop_Control_IEEE.pdf) (SHA-256 identical to [manuscript/main.pdf](manuscript/main.pdf))
-- **TeX Source & References (31 verified entries)**: [manuscript/main.tex](manuscript/main.tex), [manuscript/references.bib](manuscript/references.bib)
-- **Turnkey Submission Kit**: [SUBMISSION_GUIDE.md](SUBMISSION_GUIDE.md), [submission/COVER_LETTER_IEEE.md](submission/COVER_LETTER_IEEE.md), [submission/DECLARATIONS_AND_METADATA.md](submission/DECLARATIONS_AND_METADATA.md)
+- **Compiled Manuscript (9 pages) & Supplementary**: [CL-VSSC_ClosedLoop_Control_IEEE.pdf](CL-VSSC_ClosedLoop_Control_IEEE.pdf) (SHA-256 identical to [manuscript/main.pdf](manuscript/main.pdf)), [CL-VSSC_Supplementary_IEEE.pdf](CL-VSSC_Supplementary_IEEE.pdf) (Tables S-I–S-IV & expanded proofs)
+- **TeX Source & References (31 verified entries)**: [manuscript/main.tex](manuscript/main.tex), [manuscript/supplementary.tex](manuscript/supplementary.tex), [manuscript/references.bib](manuscript/references.bib)
+- **Turnkey Submission Kit**: [SUBMISSION_GUIDE.md](SUBMISSION_GUIDE.md), Graphical Abstract ([PDF](submission/Graphical_Abstract.pdf) / [PNG](submission/Graphical_Abstract.png)), PDF Cover Letters ([IEEE TCYB](submission/Cover_Letter_IEEE_TCYB.pdf), [IEEE TNNLS](submission/Cover_Letter_IEEE_TNNLS.pdf), [Information Fusion](submission/Cover_Letter_Information_Fusion.pdf)), [Elsevier Highlights](submission/Highlights_Elsevier.pdf), [DECLARATIONS_AND_METADATA.md](submission/DECLARATIONS_AND_METADATA.md), and 1-command stamper [`src/apply_author_info.py`](src/apply_author_info.py)
 - **Control & SJTU 816 Chinese Study Guide**: [STUDY_GUIDE_CN.md](STUDY_GUIDE_CN.md)
 
 ---

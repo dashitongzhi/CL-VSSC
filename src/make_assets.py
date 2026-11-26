@@ -21,6 +21,7 @@ RES4_DIR = ROOT / "results_v4"
 
 FIG_DIR = ROOT / "manuscript" / "figures"
 TAB_DIR = ROOT / "manuscript" / "tables"
+SUB_DIR = ROOT / "submission"
 
 plt.rcParams.update(
     {
@@ -1053,9 +1054,293 @@ def make_p2_fig6_stability_phase_200k(
     plt.close(fig)
 
 
+def write_p2_supplementary_tables(
+    summary: pd.DataFrame,
+    bench: pd.DataFrame,
+    stress: pd.DataFrame,
+    tcga3: pd.DataFrame,
+    stress3: pd.DataFrame,
+    sc_bench: pd.DataFrame,
+    sc_fault: pd.DataFrame,
+    sc_bench3: pd.DataFrame,
+    sc_fault3: pd.DataFrame,
+) -> None:
+    """Generate Supplementary Tables S-I to S-IV programmatically from results_v2/v3."""
+    # Table S-I: Notation, Default Parameters, and Asymptotic Complexity Comparison
+    t1_lines = [
+        r"\begin{table*}[t]",
+        r"\centering",
+        r"\caption{Methodological Mechanism, Asymptotic Complexity, and Fixed Control Parameters}",
+        r"\label{tab:p2_stab1}",
+        r"\scriptsize",
+        r"\renewcommand{\arraystretch}{1.14}",
+        r"\setlength{\tabcolsep}{2.4pt}",
+        r"\begin{tabular}{lllll}",
+        r"\toprule",
+        r"Method & Weighting / Fusion Mechanism & Time Complexity & Memory & Control Guarantees / Role \\",
+        r"\midrule",
+        r"SNF \cite{wang2014snf} & Open-loop cross-diffusion & $\mathcal{O}(T_{\mathrm{diff}} n^3)$ & $\mathcal{O}(V n^2)$ & Fixed diffusion; no partition feedback \\",
+        r"NEMO \cite{rappoport2019nemo} & Open-loop partial averaging & $\mathcal{O}(n^3)$ & $\mathcal{O}(V n^2)$ & No adaptive modal rejection \\",
+        r"MCGC \cite{zhan2019mcgc} & Inverse graph discrepancy & $\mathcal{O}(T n^3)$ & $\mathcal{O}(V n^2)$ & Heuristic weights ($w_{\mathrm{corr}}{=}0.190$ at $\sigma{=}4$) \\",
+        r"Subtype-GAN \cite{yang2021subtypegan} & Deep WGAN + GMM latent & $\mathcal{O}(E n d_{\mathrm{tot}} h)$ & $\mathcal{O}(B d_{\mathrm{tot}})$ & Amortized encoder; noise-sensitive \\",
+        r"Attention-MOAE \cite{moon2022moma} & Static attention autoencoder & $\mathcal{O}(E n d_{\mathrm{tot}} h)$ & $\mathcal{O}(B d_{\mathrm{tot}})$ & High-variance lock-in ($w_{\mathrm{ADT}}{=}0.866$) \\",
+        r"Seurat-WNN \cite{hao2021seuratv4} & Local $k$-NN ratio weights & $\mathcal{O}(V n^2 \log n)$ & $\mathcal{O}(V n k)$ & No integral memory or dual pruning \\",
+        r"LMVSC \cite{kang2020lmvsc} & Static anchor subspace fusion & $\mathcal{O}(n m^2 + m^3)$ & $\mathcal{O}(V n m)$ & Linear-time open loop; uniform fusion \\",
+        r"\midrule",
+        r"CL-VSSC (Dense) & Stiefel + PI + dual $\mu(t)$ & $\mathcal{O}(T(n^3 + \sum_v n d_v r))$ & $\mathcal{O}(V n^2)$ & Exact ISS / DK ($T{=}45$, $t_{\mathrm{warm}}{=}15$) \\",
+        r"CL-VSSC-Anchor & Gram + Local/Null PI + $\mu(t)$ & $\mathcal{O}(T(nm^2 + \sum_v n d_v r))$ & $\mathcal{O}(Vnm + \sum_v nd_v)$ & Exact Prop.~1 ($\mathcal{O}(N^{0.996})$ VRAM) \\",
+        r"\bottomrule",
+        r"\end{tabular}",
+        r"\end{table*}",
+    ]
+    (TAB_DIR / "p2_stab1_notation_complexity.tex").write_text("\n".join(t1_lines) + "\n")
+
+    # Table S-II: 10-TCGA Cohort Metadata + Per-Cohort -log10(p_perm)
+    comb_b = pd.concat([bench, tcga3], ignore_index=True)
+    comb_b = comb_b[~comb_b["method"].str.startswith("OpenLoop_")].copy()
+    piv_p = comb_b.pivot_table(index="cohort", columns="method", values="neg_log10_perm_p")
+    piv_p_raw = comb_b.pivot_table(index="cohort", columns="method", values="perm_p")
+    m_cols = [
+        ("CL-VSSC (No-DZ PI)", r"\shortstack{Smooth\\PI}"),
+        ("CL-VSSC (Null-SNR PI)", r"\shortstack{Null-\\SNR}"),
+        ("CL-VSSC (DZ-PI)", r"\shortstack{DZ-\\PI}"),
+        ("CL-VSSC (P-only)", r"\shortstack{P-\\only}"),
+        ("CL-VSSC (w/o Feedback)", r"\shortstack{w/o\\FB}"),
+        ("CL-VSSC (w/o SpecCtrl)", r"\shortstack{w/o\\Spec}"),
+        ("SNF", "SNF"),
+        ("NEMO", "NEMO"),
+        ("MCGC", "MCGC"),
+        ("Seurat-WNN", r"\shortstack{Seurat\\WNN}"),
+        ("Attention-MOAE", r"\shortstack{Att.\\MOAE}"),
+        ("Subtype-GAN", r"\shortstack{Sub.\\GAN}"),
+    ]
+    sum_idx = summary.set_index("cohort")
+    t2_lines = [
+        r"\begin{table*}[t]",
+        r"\centering",
+        r"\caption{Per-Cohort 10-TCGA Metadata ($N=3{,}113$, $1{,}235$ Events) and 5,000-Permutation Survival $-\log_{10}p_{\mathrm{perm}}$}",
+        r"\label{tab:p2_stab2}",
+        r"\scriptsize",
+        r"\renewcommand{\arraystretch}{1.12}",
+        r"\setlength{\tabcolsep}{2.1pt}",
+        r"\begin{tabular}{lcc" + "c" * len(m_cols) + "}",
+        r"\toprule",
+        r"Cohort & $n$ / Events & $c$ & " + " & ".join(lbl for _, lbl in m_cols) + r" \\",
+        r"\midrule",
+    ]
+    for coh in COHORTS:
+        row_s = sum_idx.loc[coh]
+        ne_str = f"{int(row_s['n_samples'])} / {int(row_s['n_events'])}"
+        k_str = f"{int(row_s['canonical_k'])}"
+        vals = [float(piv_p.loc[coh, mk]) for mk, _ in m_cols]
+        mx = max(vals)
+        cells = [
+            f"\\textbf{{{v:.3f}}}" if abs(v - mx) < 1e-6 else f"{v:.3f}"
+            for v in vals
+        ]
+        t2_lines.append(f"{coh} & {ne_str} & {k_str} & " + " & ".join(cells) + r" \\")
+    t2_lines.append(r"\midrule")
+    sig_row = [f"{int((piv_p_raw[mk] < 0.05).sum())}/10" for mk, _ in m_cols]
+    med_row = [f"{float(piv_p[mk].median()):.3f}" for mk, _ in m_cols]
+    mean_row = [f"{float(piv_p[mk].mean()):.3f}" for mk, _ in m_cols]
+    t2_lines.append(r"Sig.\ ($p{<}0.05$) & --- & --- & " + " & ".join(sig_row) + r" \\")
+    t2_lines.append(r"Median & --- & --- & " + " & ".join(med_row) + r" \\")
+    t2_lines.append(r"Mean & 3,113 / 1,235 & --- & " + " & ".join(mean_row) + r" \\")
+    t2_lines.extend([r"\bottomrule", r"\end{tabular}", r"\end{table*}"])
+    (TAB_DIR / "p2_stab2_tcga_cohorts.tex").write_text("\n".join(t2_lines) + "\n")
+
+    # Table S-III: Paired Wilcoxon & BH-FDR Ledger across 1,560-run stress
+    comb_s = pd.concat([stress, stress3], ignore_index=True)
+    comb_s = comb_s[~comb_s["method"].str.startswith("OpenLoop_")].copy()
+    ref_m = "CL-VSSC (Null-SNR PI)"
+    comps = [
+        ("CL-VSSC (No-DZ PI)", "CL-VSSC (Smooth PI)"),
+        ("CL-VSSC (DZ-PI)", "CL-VSSC (DZ-PI)"),
+        ("CL-VSSC (w/o Feedback)", "CL-VSSC (w/o FB)"),
+        ("SNF", "SNF"),
+        ("NEMO", "NEMO"),
+        ("MCGC", "MCGC"),
+        ("Seurat-WNN", "Seurat-WNN"),
+        ("Attention-MOAE", "Attention-MOAE"),
+        ("Subtype-GAN", "Subtype-GAN"),
+    ]
+    slices = [
+        ("s4", None, [4.0]),
+        ("s24", None, [2.0, 4.0]),
+        ("sall", None, [0.5, 1.0, 2.0, 4.0]),
+        ("sec4", ["mRNA", "miRNA"], [4.0]),
+    ]
+    stats_out: Dict[str, Dict[str, tuple]] = {}
+    for skey, mods, sigs in slices:
+        sub = comb_s[comb_s["noise_sigma"].isin(sigs)]
+        if mods is not None:
+            sub = sub[sub["modality"].isin(mods)]
+        piv = sub.pivot_table(index=["cohort", "modality", "noise_sigma", "seed"], columns="method", values="clean_retention_ari")
+        pvals = []
+        tmp = []
+        for mk, _ in comps:
+            diff = (piv[ref_m] - piv[mk]).dropna()
+            _, pv = wilcoxon(diff, alternative="greater")
+            pvals.append(float(pv))
+            tmp.append((mk, float(diff.mean()), int((diff > 1e-9).sum()), len(diff), float(pv)))
+        qvals = _bh_fdr(pvals)
+        stats_out[skey] = {mk: (dm, wins, tot, pv, qv) for (mk, dm, wins, tot, pv), qv in zip(tmp, qvals)}
+
+    t3_lines = [
+        r"\begin{table*}[t]",
+        r"\centering",
+        r"\caption{Complete Paired One-Sided Wilcoxon Signed-Rank $p$ and BH-FDR $q$ Comparison of Null-SNR PI Fault Retention ARI Across Stress Slices}",
+        r"\label{tab:p2_stab3}",
+        r"\scriptsize",
+        r"\renewcommand{\arraystretch}{1.14}",
+        r"\setlength{\tabcolsep}{2.2pt}",
+        r"\begin{tabular}{lccccc}",
+        r"\toprule",
+        r"Method (vs.\ Null-SNR) & \shortstack{$\sigma{=}4.0$ ($n{=}36$)\\$\Delta\mathrm{ARI}$ / W--T} & \shortstack{$\sigma{=}4.0$ ($n{=}36$)\\Wilcoxon $p$ / BH $q$} & \shortstack{$\sigma{\in}\{2,4\}$ ($n{=}72$)\\$\Delta\mathrm{ARI}$ / BH $q$} & \shortstack{All $\sigma{>}0$ ($n{=}144$)\\$\Delta\mathrm{ARI}$ / BH $q$} & \shortstack{mRNA+miRNA ($n{=}24$)\\$\Delta\mathrm{ARI}$ / BH $q$} \\",
+        r"\midrule",
+    ]
+    for mk, lbl in comps:
+        d4, w4, n4, p4, q4 = stats_out["s4"][mk]
+        d24, _, _, _, q24 = stats_out["s24"][mk]
+        dall, _, _, _, qall = stats_out["sall"][mk]
+        dsec, _, _, _, qsec = stats_out["sec4"][mk]
+        t3_lines.append(
+            f"{lbl} & ${d4:+.3f}$ ({w4}/{n4}) & {_fmt_q(p4)} / {_fmt_q(q4)} & "
+            f"${d24:+.3f}$ / {_fmt_q(q24)} & ${dall:+.3f}$ / {_fmt_q(qall)} & ${dsec:+.3f}$ / {_fmt_q(qsec)} \\\\"
+        )
+    t3_lines.extend([r"\bottomrule", r"\end{tabular}", r"\end{table*}"])
+    (TAB_DIR / "p2_stab3_wilcoxon_ledger.tex").write_text("\n".join(t3_lines) + "\n")
+
+    # Table S-IV: Multi-site CITE-seq Clean ARI (mean+-SD) & Bidirectional scRNA/ADT Faults
+    comb_scb = pd.concat([sc_bench, sc_bench3], ignore_index=True)
+    comb_scf = pd.concat([sc_fault, sc_fault3], ignore_index=True)
+    sc_methods = [
+        "CL-VSSC-Anchor",
+        "CL-VSSC-Anchor (Local PI)",
+        "CL-VSSC-Anchor (Local+Null)",
+        "CL-VSSC-Anchor (Null-SNR)",
+        "CL-VSSC-Anchor (DZ-PI)",
+        "CL-VSSC-Anchor (w/o FB)",
+        "LMVSC",
+        "Seurat-WNN",
+        "Attention-MOAE",
+        "Subtype-GAN",
+    ]
+    ds_ord = ["BMMC-Site1", "BMMC-Site2", "BMMC-10k", "BMMC-30k"]
+    g_sc = comb_scb.groupby(["dataset", "method"])["ari"].agg(["mean", "std"])
+    g_flt = comb_scf.groupby(["corrupted_modality", "noise_sigma", "method"])[["gt_ari", "w_corrupted"]].mean()
+    t4_lines = [
+        r"\begin{table*}[t]",
+        r"\centering",
+        r"\caption{CITE-seq Multi-Site Clean ARI ($\mathrm{Mean} \pm \mathrm{SD}$, 3 Seeds) and Bidirectional \texttt{BMMC-10k} scRNA vs.\ Protein-ADT Fault Isolation ($\mathrm{ARI} / w_{\mathrm{corr}}$)}",
+        r"\label{tab:p2_stab4}",
+        r"\scriptsize",
+        r"\renewcommand{\arraystretch}{1.13}",
+        r"\setlength{\tabcolsep}{2.0pt}",
+        r"\begin{tabular}{lcccccccc}",
+        r"\toprule",
+        r"Method & Site1 ARI & Site2 ARI & 10k ARI & 30k ARI & \shortstack{scRNA $\sigma{=}1.5$\\ARI / $w_{\mathrm{RNA}}$} & \shortstack{scRNA $\sigma{=}3.0$\\ARI / $w_{\mathrm{RNA}}$} & \shortstack{ADT $\sigma{=}1.5$\\ARI / $w_{\mathrm{ADT}}$} & \shortstack{ADT $\sigma{=}3.0$\\ARI / $w_{\mathrm{ADT}}$} \\",
+        r"\midrule",
+    ]
+    for m in sc_methods:
+        c_cells = [f"{g_sc.loc[(ds, m), 'mean']:.3f}$\\pm${g_sc.loc[(ds, m), 'std']:.3f}" for ds in ds_ord]
+        f_cells = []
+        for mod, sig in [("scRNA", 1.5), ("scRNA", 3.0), ("Protein_ADT", 1.5), ("Protein_ADT", 3.0)]:
+            ari_v = float(g_flt.loc[(mod, sig, m), "gt_ari"])
+            w_v = float(g_flt.loc[(mod, sig, m), "w_corrupted"])
+            w_s = "---" if np.isnan(w_v) else f"{w_v:.3f}"
+            f_cells.append(f"{ari_v:.3f} / {w_s}")
+        t4_lines.append(f"{DISPLAY_P2[m]} & " + " & ".join(c_cells) + " & " + " & ".join(f_cells) + r" \\")
+    t4_lines.extend([r"\bottomrule", r"\end{tabular}", r"\end{table*}"])
+    (TAB_DIR / "p2_stab4_cite_bidirectional.tex").write_text("\n".join(t4_lines) + "\n")
+
+
+def make_graphical_abstract(
+    stress: pd.DataFrame,
+    stress3: pd.DataFrame,
+    heal_df: pd.DataFrame,
+    heal_trajs: dict,
+    v4_env: dict,
+) -> None:
+    """Create 300-DPI IEEE / Elsevier Graphical Abstract (PDF + PNG) summarizing closed-loop architecture and empirical proof."""
+    SUB_DIR.mkdir(parents=True, exist_ok=True)
+    fig = plt.figure(figsize=(12.6, 4.75), dpi=300)
+    gs = fig.add_gridspec(2, 2, width_ratios=[1.12, 1.0], height_ratios=[1.0, 1.0], wspace=0.22, hspace=0.40)
+
+    # Left column: full-height closed-loop control schematic
+    ax_diag = fig.add_subplot(gs[:, 0])
+    ax_diag.set_xlim(0, 100)
+    ax_diag.set_ylim(0, 56)
+    ax_diag.axis("off")
+    ax_diag.set_title("Closed-Loop Multi-Modal Spectral Control (CL-VSSC / CL-VSSC-Anchor)", fontsize=9.8, fontweight="bold", pad=6)
+
+    draw_box(ax_diag, 2, 33, 27, 17, "Stiefel Plant", "Orthogonal $Z,\\, U^{(v)}$\nOperator-norm $\\sigma_{\\max}^2$\nDense $A^{(v)}$ / Anchor $\\tilde{B}^{(v)}$", fc="#EDF5FB", ec="#0072B2")
+    draw_box(ax_diag, 37, 33, 30, 17, "Dual Eigengap Actuator", "Anchor Gram $\\mathcal{O}(nm^2)$\nKy Fan pruning $\\mu(t)$\nOpens gap $\\Delta\\lambda_c$ (ISS)", fc="#EEF8F3", ec="#009E73", title_color="#005A40")
+    draw_box(ax_diag, 74, 34, 24, 15, "Controlled Subtypes", "Eigenvectors $F(T)$\nDavis--Kahan bound\n90k--300k linear VRAM", fc="#F4F6F8", ec="#444444", title_color="#222222")
+    draw_box(ax_diag, 52, 5, 44, 17, "Cut & Null-SNR Fault Sensor", "Intrinsic/consensus cuts + DOF residual $e_v(t)$\nNull-SNR column shuffle + double-centered $\\tilde{\\delta}^{\\mathrm{loc}}$", fc="#FFF6ED", ec="#D55E00", title_color="#8C3B00")
+    draw_box(ax_diag, 3, 5, 42, 17, "Anti-Windup PI Simplex Controller", "Leaky integrator $I_v$ (BIBO) + $\\delta_{\\mathrm{dz}}{=}0$\nExponential fault rejection $e^{-(1+\\kappa_I)\\Delta e/\\tau}$", fc="#FDF3F8", ec="#CC79A7", title_color="#782857")
+
+    draw_arrow(ax_diag, 29.3, 41.5, 36.7, 41.5, color="#0072B2")
+    draw_arrow(ax_diag, 67.3, 41.5, 73.7, 41.5, color="#009E73")
+    draw_arrow(ax_diag, 64.0, 32.7, 64.0, 22.4, label=r"$F(t), \tilde{r}_v$", lx=71.0, ly=27.6, color="#D55E00")
+    draw_arrow(ax_diag, 51.7, 13.5, 45.3, 13.5, label=r"$e_v$", ly=16.0, color="#8C3B00")
+    draw_arrow(ax_diag, 15.5, 22.3, 15.5, 32.7, label=r"$w(t)$", lx=10.5, ly=27.6, color="#CC79A7")
+    draw_arrow(ax_diag, 34.0, 22.3, 44.0, 32.7, label=r"$w, W_{\mathrm{loc}}$", lx=45.0, ly=26.5, color="#CC79A7")
+
+    # Top-right: 1,560-run TCGA sigma=4.0 fault weight suppression
+    ax_bar = fig.add_subplot(gs[0, 1])
+    comb_s = pd.concat([stress, stress3], ignore_index=True)
+    s4 = comb_s[comb_s["noise_sigma"] == 4.0].groupby("method")["w_corrupted"].mean()
+    bars = [
+        ("Att.-MOAE", float(s4["Attention-MOAE"]), "#9467BD"),
+        ("Seurat-WNN", float(s4["Seurat-WNN"]), "#8C564B"),
+        ("MCGC", float(s4["MCGC"]), "#E69F00"),
+        ("DZ-PI", float(s4["CL-VSSC (DZ-PI)"]), "#009E73"),
+        ("Smooth PI", float(s4["CL-VSSC (No-DZ PI)"]), "#0072B2"),
+        ("Null-SNR PI", float(s4["CL-VSSC (Null-SNR PI)"]), "#9E0142"),
+    ]
+    y_pos = np.arange(len(bars))
+    ax_bar.barh(y_pos, [b[1] for b in bars], color=[b[2] for b in bars], height=0.62)
+    ax_bar.set_yticks(y_pos)
+    ax_bar.set_yticklabels([b[0] for b in bars], fontsize=7.2)
+    ax_bar.invert_yaxis()
+    ax_bar.set_xlim(0, 0.39)
+    ax_bar.set_xlabel(r"Corrupted modality weight $w_{\mathrm{corr}}$ at $\sigma=4.0$ ($60\%$ drop)", fontsize=7.6)
+    ax_bar.set_title(r"1,560-Run Sensor Rejection ($q=1.46\times 10^{-11}$)", fontsize=8.8, fontweight="bold")
+    for idx, (_, val, _) in enumerate(bars):
+        ax_bar.text(val + 0.006, idx, f"{val:.3f}", va="center", fontsize=7.0, fontweight="bold" if idx >= 4 else "normal")
+    ax_bar.grid(axis="x", alpha=0.2, ls=":")
+
+    # Bottom-right: N=200,000 mid-stream step-fault self-healing
+    ax_heal = fig.add_subplot(gs[1, 1])
+    for m_key, lbl, col, ls in [
+        ("CL-VSSC-Anchor (Smooth PI)", "Smooth PI (7 it / 3.82s)", "#0072B2", "-"),
+        ("CL-VSSC-Anchor (Null-SNR PI)", "Null-SNR (7 it / 5.20s)", "#9E0142", "-"),
+        ("CL-VSSC-Anchor (Local PI)", "Local PI (7 it / 6.03s)", "#01665E", "--"),
+        ("CL-VSSC-Anchor (DZ-PI)", "DZ-PI (stalled 0.500)", "#009E73", "-."),
+    ]:
+        w_hist = np.array(heal_trajs[f"StepFault_t10__{m_key}"]["w_adt_history"])
+        ax_heal.plot(np.arange(len(w_hist)), w_hist, label=lbl, color=col, ls=ls, lw=1.8)
+    ax_heal.axvline(10, color="#B22222", ls="--", lw=1.1)
+    ax_heal.set_xlim(0, 30)
+    ax_heal.set_ylim(0.20, 0.92)
+    ax_heal.set_xlabel(r"Closed-loop iteration $t$ ($N=200{,}000$ cells)", fontsize=7.6)
+    ax_heal.set_ylabel(r"Corrupted $w_{\mathrm{ADT}}(t)$", fontsize=7.6)
+    vram_a = float(v4_env["v42_summary"]["scale_summary"]["CL-VSSC-Anchor (Smooth PI)"]["vram_power_alpha"])
+    ax_heal.set_title(rf"200k Step-Fault Self-Healing ($\mathcal{{O}}(N^{{{vram_a:.3f}}})$ VRAM)", fontsize=8.8, fontweight="bold")
+    ax_heal.legend(loc="lower left", fontsize=6.2, frameon=True, framealpha=0.94)
+    ax_heal.grid(alpha=0.2, ls=":")
+
+    fig.savefig(SUB_DIR / "Graphical_Abstract.pdf", bbox_inches="tight")
+    fig.savefig(SUB_DIR / "Graphical_Abstract.png", dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+
 def main() -> None:
     FIG_DIR.mkdir(parents=True, exist_ok=True)
     TAB_DIR.mkdir(parents=True, exist_ok=True)
+    SUB_DIR.mkdir(parents=True, exist_ok=True)
+    summary = pd.read_csv(RES2_DIR / "cohort_summary_v2.csv")
     bench = pd.read_csv(RES2_DIR / "tcga_benchmark_v2.csv")
     ksens = pd.read_csv(RES2_DIR / "k_sensitivity_v2.csv")
     stress = pd.read_csv(RES2_DIR / "fault_tolerance_v2.csv")
@@ -1091,7 +1376,9 @@ def main() -> None:
     write_p2_tab1_controller_ablation(bench, ksens, stress, traj, tcga3, ksens3, stress3, traj3)
     write_p2_tab2_fault_stress(stress, stress3)
     write_p2_tab3_singlecell(sc_bench, sc_fault, scale, sc_bench3, sc_fault3, sc_scale3)
-    print("Generated Paper 2 assets:", len(list(FIG_DIR.glob("*.pdf"))), "figs,", len(list(TAB_DIR.glob("*.tex"))), "tabs")
+    write_p2_supplementary_tables(summary, bench, stress, tcga3, stress3, sc_bench, sc_fault, sc_bench3, sc_fault3)
+    make_graphical_abstract(stress, stress3, heal_df, heal_trajs, v4_env)
+    print("Generated Paper 2 assets:", len(list(FIG_DIR.glob("*.pdf"))), "figs,", len(list(TAB_DIR.glob("*.tex"))), "tabs + Graphical Abstract")
 
 if __name__ == "__main__":
     main()

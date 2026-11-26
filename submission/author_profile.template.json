@@ -1,0 +1,17 @@
+{
+  "author_full_name": "[Author Full Name]",
+  "author_surname": "[Author Surname]",
+  "author_given_name": "[Author Given Name]",
+  "author_title": "[Title, e.g., Ph.D. Candidate / Associate Professor]",
+  "department": "[Department / School]",
+  "university": "[University / Institution]",
+  "city": "[City]",
+  "postal_code": "[Postal Code]",
+  "country": "[Country]",
+  "email": "[author@institution.edu]",
+  "orcid": "[0000-0000-0000-0000]",
+  "funding_note": "This work was supported in part by [Grant / Funding Agency, if applicable, or delete this sentence].",
+  "paper1_authors": "Author, Corresponding",
+  "paper1_note": "Companion manuscript (MIVS-CL; provided as supplementary material for review)",
+  "submission_date": "November 27, 2026"
+}

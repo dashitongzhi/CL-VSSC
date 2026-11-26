@@ -14,7 +14,7 @@ env/
 .vscode/
 .idea/
 
-# LaTeX build intermediates (keep main.tex, references.bib, figures/, tables/, and compiled PDFs)
+# LaTeX & submission build intermediates (keep sources, figures, tables, and compiled PDFs/PNGs)
 manuscript/*.aux
 manuscript/*.bbl
 manuscript/*.blg
@@ -24,3 +24,14 @@ manuscript/*.log
 manuscript/*.out
 manuscript/*.synctex.gz
 manuscript/*.xdv
+submission/*.aux
+submission/*.bbl
+submission/*.blg
+submission/*.fdb_latexmk
+submission/*.fls
+submission/*.log
+submission/*.out
+submission/*.synctex.gz
+submission/*.xdv
+submission/*.zip
+

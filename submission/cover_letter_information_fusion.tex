@@ -1,0 +1,43 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=0.92in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\pagestyle{empty}
+
+\begin{document}
+
+[TODO(PERSONAL\_INFO): Date, e.g., November 27, 2026]
+
+\vspace{6pt}
+To the Editor-in-Chief and Editorial Board\\
+\textit{Information Fusion} (Elsevier)
+
+\vspace{6pt}
+Dear Editor-in-Chief and Associate Editors,
+
+We submit our manuscript entitled \textbf{``Closed-Loop Proportional--Integral Feedback and Linear-Time Bipartite Spectral Control for Fault-Tolerant Multi-Modal Clustering''} for consideration as a Full-Length Article in \textit{Information Fusion}.
+
+Heterogeneous multi-modal fusion systems face a persistent reliability challenge: when individual sensing channels suffer severe noise or dropout, open-loop weighting heuristics and static deep attention encoders leak corrupted edges directly into the fused representation. Viewing multi-modal fusion through closed-loop control theory, we present \textbf{CL-VSSC} and its linear-time bipartite landmark controller \textbf{CL-VSSC-Anchor} ($\mathcal{O}(nm^2 + ndr)$), which couple a Stiefel-manifold orthogonal variable-separation plant with a dual Ky Fan eigengap actuator and a damped proportional--integral (PI) mirror-descent fusion controller.
+
+\textbf{Why \textit{Information Fusion} Is an Ideal Venue:}
+\begin{enumerate}\setlength{\itemsep}{2pt}
+    \item \textbf{Fault-tolerant multi-sensor fusion:} Across 1,560 three-modality TCGA runs ($\sigma \le 4.0$, $60\%$ dropout), Smooth PI ($0.012$) and column-shuffled Null-SNR calibration ($0.002$) suppress faulty sensors below every weighted baseline ($36/36$ wins, BH-FDR $q=1.46 \times 10^{-11}$) and reach $0.796$ ARI when secondary sensors fail ($q \le 6.19 \times 10^{-4}$).
+    \item \textbf{Bidirectional local vs.\ global weighting:} Double-centered Anchor-Local PI eliminates global integral drift across heterogeneous RNA and protein modalities on $90{,}261$ CITE-seq cells ($p=0.032$), while isolating both \texttt{scRNA} ($w_{\mathrm{RNA}}=0.060\text{--}0.069$) and \texttt{Protein-ADT} faults where static attention collapses ($0.051$ ARI).
+    \item \textbf{Provable fusion guarantees and physical observability scope:} We establish formal Input-to-State Stability (ISS), BIBO anti-windup bounds, Davis--Kahan $\sin\Theta$ error bounds, 536-point $(K_p,K_i,\delta_{\mathrm{dz}})$ stability maps, $\mathcal{O}(N^{0.996})$ scaling to $300{,}000$ cells, $7$-iteration ($3.82\text{--}6.03\text{ s}$) $200{,}000$-cell self-healing, and transparent analysis of primary-sensor observability limits.
+\end{enumerate}
+
+This work is original and not under concurrent review elsewhere. Companion manuscript~[29] (\textit{MIVS-CL}), which addresses clinical missing-block imputation, is explicitly cited and disclosed ($<0.6\%$ 10-gram overlap, zero shared figures or tables) and accompanied by a Supplementary Material PDF and Graphical Abstract. All code and verified archives are publicly available under the MIT license at \url{https://github.com/dashitongzhi/CL-VSSC}. The authors declare no competing interests.
+
+\vspace{6pt}
+Sincerely,
+
+\textbf{[TODO(PERSONAL\_INFO): Author Full Name]}\\
+{[TODO(PERSONAL\_INFO): Title, Department / School, University / Institution]}\\
+{[TODO(PERSONAL\_INFO): City, Postal Code, Country]}\\
+E-mail: \texttt{[TODO(PERSONAL\_INFO): author@institution.edu]} \quad ORCID: \texttt{[TODO(PERSONAL\_INFO): 0000-0000-0000-0000]}
+
+\end{document}

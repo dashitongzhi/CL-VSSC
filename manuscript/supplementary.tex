@@ -1,0 +1,125 @@
+\documentclass[journal]{IEEEtran}
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{placeins}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+
+\emergencystretch=1.2em
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thetable}{S-\Roman{table}}
+\renewcommand{\theequation}{S\arabic{equation}}
+\newtheorem{proposition}{Proposition}
+\renewcommand{\theproposition}{S\arabic{proposition}}
+
+% TODO(PERSONAL_INFO): Update target journal if not IEEE Transactions on Cybernetics, and replace [Author Surname].
+\markboth{SUPPLEMENTARY MATERIAL: SUBMITTED TO IEEE TRANSACTIONS ON CYBERNETICS}{[Author Surname]: Closed-Loop PI Feedback and Bipartite Spectral Control}
+
+\begin{document}
+
+\title{Supplementary Material: Closed-Loop Proportional--Integral Feedback and Linear-Time Bipartite Spectral Control for Fault-Tolerant Multi-Modal Clustering}
+
+% TODO(PERSONAL_INFO): Replace bracketed author name(s) and affiliation before submission.
+\author{[Author Full Name]%
+\thanks{[Author Full Name] is with the [Department / School], [University / Institution], [City] [Postal Code], [Country] (e-mail: [author@institution.edu]; ORCID: [0000-0000-0000-0000]). Source code and verified benchmark archives are publicly available at \url{https://github.com/dashitongzhi/CL-VSSC}.}}
+
+\maketitle
+
+\noindent This Supplementary Material provides full symbol definitions and asymptotic complexity comparisons (Section~\ref{sec:s1}), expanded step-by-step proofs for Propositions~1--3 together with the bounded-input bounded-output (BIBO) anti-windup proof (Section~\ref{sec:s2}), per-cohort 10-TCGA performance and complete paired Wilcoxon Benjamini--Hochberg FDR statistics across 1,560 fault stress runs (Section~\ref{sec:s3}), and bidirectional CITE-seq \texttt{scRNA}/\texttt{Protein-ADT} fault isolation alongside $N=200{,}000$ static and step-fault self-healing measurements (Section~\ref{sec:s4}).
+
+\section{Notation, Default Hyperparameters, and Complexity Analysis}\label{sec:s1}
+
+All closed-loop experiments in the main paper use one fixed set of global hyperparameters without per-cohort tuning: shared Stiefel subspace rank $r = 24$, modality-specific nuisance rank $r_v = 6$, Stiefel affinity-propagation weight $\lambda_Z = 2.0$, soft nuisance denoising factor $\beta_u = 0.35$, state EMA rates $\eta_Z = \eta_S = 0.35$, affinity refresh EMA $\rho_a = 0.25$ (every 5 iterations), sensor weights $\gamma_{\mathrm{rec}} = 0.30$ and $\gamma_{\mathrm{cons}} = 0.08$, leaky integrator decay $\beta_I = 0.40$, integral-to-proportional ratio $\kappa_I = 0.35$, mirror-descent rate $\eta_w = 0.30$, entropy temperature $\tau = 0.20$ ($K_p = \eta_w/\tau = 1.5$), Smooth PI zero dead zone $\delta_{\mathrm{dz}} = 0.0$ (vs.\ $\delta_{\mathrm{dz}} = 0.14$ in DZ-PI), and dual eigengap parameters $\eta_\mu = 0.05$, $\mu_{\max} = 0.12$, $\epsilon_{\mathrm{spec}} = 0.02$. In dense TCGA runs, $T = 45$ with warmup release $t_{\mathrm{warm}} = 15$; in large-scale \texttt{CL-VSSC-Anchor} runs, $T = 30$, $t_{\mathrm{warm}} = 10$, $m = 384$, $k_a = 20$, and double-centered local gain $\alpha_{\mathrm{loc}} = 0.25$. Table~\ref{tab:p2_stab1} contrasts symbols and asymptotic complexity against dense, deep, and anchor baselines.
+
+\input{tables/p2_stab1_notation_complexity.tex}
+
+\section{Expanded Mathematical Proofs}\label{sec:s2}
+
+\subsection{Proof of Proposition~1 (Linear-Time Exact Anchor Gram Equivalence)}
+Let $B \in \mathbb{R}_{\ge 0}^{n \times m}$ have positive row sums $D_r = \operatorname{diag}(B\mathbf{1}_m) \succ 0$ and column sums $D_c = \operatorname{diag}(B^\top \mathbf{1}_n) \succ 0$, and define $\tilde{B} = D_r^{-1/2} B D_c^{-1/2}$. Notice first that for any vector $x \in \mathbb{R}^n$ with $\|x\|_2 = 1$, letting $y = \tilde{B}^\top x$, Cauchy--Schwarz yields
+\begin{equation}
+\begin{aligned}
+\|\tilde{B}^\top x\|_2^2 &= \sum_{j=1}^m \frac{1}{D_{c,jj}}\left(\sum_{i=1}^n \frac{B_{ij}}{\sqrt{D_{r,ii}}} x_i\right)^2 \\
+&\le \sum_{j=1}^m \frac{1}{D_{c,jj}}\left(\sum_{i=1}^n B_{ij}\right)\left(\sum_{i=1}^n \frac{B_{ij}}{D_{r,ii}} x_i^2\right) \\
+&= \sum_{i=1}^n x_i^2 = 1,
+\end{aligned}
+\end{equation}
+so the singular values of $\tilde{B}$ obey $0 \le \sigma_j \le 1$, matching $\lambda_j(L_{\mathrm{bip}}) = 1 - \sigma_j^2 \in [0, 1]$. Taking the thin singular value decomposition $\tilde{B} = F \Sigma U_{\mathcal{A}}^\top$ with $F^\top F = I_m$ and $U_{\mathcal{A}}^\top U_{\mathcal{A}} = I_m$, we immediately obtain
+\begin{equation}
+\tilde{B}^\top \tilde{B} = U_{\mathcal{A}} \Sigma^2 U_{\mathcal{A}}^\top, \qquad W_{\mathrm{bip}} = \tilde{B}\tilde{B}^\top = F \Sigma^2 F^\top.
+\end{equation}
+Hence the $c$ largest eigenpairs $(\sigma_j^2, u_{\mathcal{A},j})_{j=1}^c$ of the $m \times m$ Gram matrix $\tilde{B}^\top \tilde{B}$ give $F = \tilde{B} U_{\mathcal{A},:,1:c} \Sigma_{1:c}^{-1}$, satisfying $L_{\mathrm{bip}} f_j = (I_n - \tilde{B}\tilde{B}^\top) f_j = (1 - \sigma_j^2) f_j$ identically without forming any $n \times n$ matrix. Constructing $\tilde{B}^\top \tilde{B}$ takes $\mathcal{O}(nm^2)$ flops, its dense eigendecomposition takes $\mathcal{O}(m^3)$, and recovering $F$ takes $\mathcal{O}(nmc)$. Moreover, because $F^\top F = I_c$, evaluating any per-view consensus cut traces cleanly via $\operatorname{Tr}(F^\top (I_n - \tilde{B}^{(v)} \tilde{B}^{(v)\top}) F) = c - \|\tilde{B}^{(v)\top} F\|_F^2$ in $\mathcal{O}(nmc)$ time. $\square$
+
+\subsection{Proof of Proposition~2 and Anti-Windup BIBO Bound}
+We first establish the anti-windup bounded-input bounded-output (BIBO) property of the leaky fault integrator $I_v(t+1) = (1 - \beta_I) I_v(t) + \beta_I d_v(t)$ with $I_v(0) = 0$ and $\beta_I \in (0, 1]$. Unrolling the scalar recursion yields the convex combination
+\begin{equation}
+I_v(t) = \sum_{s=0}^{t-1} \beta_I (1 - \beta_I)^{t-1-s} d_v(s),
+\end{equation}
+where $\sum_{s=0}^{t-1} \beta_I (1 - \beta_I)^{t-1-s} = 1 - (1 - \beta_I)^t \le 1$ and $d_v(s) \ge 0$. Consequently,
+\begin{equation}
+0 \le I_v(t) \le \left(1 - (1 - \beta_I)^t\right)\max_{0 \le s < t} d_v(s) \le \max_{0 \le s < t} d_v(s),
+\end{equation}
+preventing unbounded integrator windup during early Stiefel alignment ($t < t_{\mathrm{warm}}$). Because each normalized Laplacian $L_v$ has spectrum in $[0, 2]$ and degree-of-freedom factors $\phi_v \ge 0.25$ keep $\tilde{r}_v(t)$ finite, $e_v(t)$ and $I_v(t)$ remain uniformly bounded along every trajectory.
+
+Now consider the KL-regularized mirror-descent step on the probability simplex $\Delta^V$:
+\begin{equation}
+\begin{aligned}
+\min_{w \in \Delta^V} \;\; & w^\top u(t+1) + \tau \sum_{v=1}^V w_v \log w_v \\
+&\quad + \frac{\tau(1-\eta_w)}{\eta_w} \mathrm{KL}\!\left(w \,\|\, w(t)\right),
+\end{aligned}
+\end{equation}
+where $u_v(t+1) = d_v(t) + \kappa_I I_v(t+1)$. Since $\tau > 0$ and $\eta_w \in (0, 1]$, the negative entropy plus KL divergence makes the objective $\frac{\tau}{\eta_w}$-strongly convex in $\ell_1$ over $\Delta^V$. Writing the Lagrangian with dual multiplier $\nu \in \mathbb{R}$ for $\sum_v w_v = 1$ and differentiating with respect to $w_v > 0$ gives
+\begin{equation}
+\begin{aligned}
+u_v(t+1) + \tau(1 + \log w_v) &\;+\; \nu \\
++ \frac{\tau(1-\eta_w)}{\eta_w}\left(1 + \log\frac{w_v}{w_v(t)}\right) &= 0.
+\end{aligned}
+\end{equation}
+Multiplying through by $\eta_w / \tau$ and isolating $\log w_v$ gives
+\begin{equation}
+\log w_v = (1-\eta_w)\log w_v(t) - \frac{\eta_w}{\tau} u_v(t+1) + \text{const},
+\end{equation}
+and because adding a view-independent mean $\frac{1}{V}\sum_j u_j(t+1)$ cancels identically after simplex normalization, replacing $u_v$ by the zero-centered signal $\bar{u}_v$ gives the closed-form update (5) in the main text with $w(t) \in \mathrm{int}(\Delta^V)$ whenever $w(0) = \frac{1}{V}\mathbf{1}$. At stationary equilibrium, $I_v^* = d_v^*$ so $u_v^* = (1+\kappa_I)d_v^*$; equating the log-ratio of clean view $g$ and faulty view $b$ cancels $\log Z_{\mathrm{norm}}$ and yields $\log(w_b^*/w_g^*) = -\frac{1+\kappa_I}{\tau}(d_b^* - d_g^*)$. Substituting $d_v^* = e_v^*$ for Smooth PI ($\delta_{\mathrm{dz}} = 0$) and $d_v^* = \max(0, e_v^* - \min_u e_u^* - \delta_{\mathrm{dz}})$ for DZ-PI establishes exact exponential attenuation for $\delta_{\mathrm{dz}} = 0$ and dead-zone stalling whenever $e_b^* - e_g^* \le \delta_{\mathrm{dz}}$. $\square$
+
+\subsection{Proof of Proposition~3 (Local ISS and Davis--Kahan Subspace Bound)}
+Assume trajectories remain inside the decoupled basin where coupling gains $(\gamma_{\mathrm{cons}}, \lambda_Z)$ preserve strictly positive fault excess $\Delta e_b(t) > 0$ for all corrupted channels $b \in \mathcal{B}$ while keeping clean-channel discrepancies negligible relative to $\Delta_L$. Write the post-normalization target Laplacian deviation from the oracle clean Laplacian $L^* = L(S^*)$ as $E_{\mathrm{tgt}}(t) = L(\hat{S}_{\mathrm{tgt}}(t)) - L^*$, decomposed into residual clean-weighted mismatch bounded by $\sum_{b \in \mathcal{B}} w_b^* \Delta_L$ plus dual pruning perturbation capped by $\bar{\delta}_\mu$. Because symmetric normalization and EMA blending update $S(t+1) = (1-\eta_S) S(t) + \eta_S \hat{S}_{\mathrm{tgt}}(t)$, evaluating the Laplacian deviation along the convex combination satisfies the linear contraction
+\begin{equation}
+\begin{aligned}
+\|L(S(t+1)) - L^*\|_F &\le (1-\eta_S)\|L(S(t)) - L^*\|_F \\
+&\quad + \eta_S \left(\sum_{b\in\mathcal{B}} w_b^* \Delta_L + \bar{\delta}_\mu\right),
+\end{aligned}
+\end{equation}
+up to higher-order degree linearization remainder absorbed inside the basin discrepancy ceiling $\Delta_L$. Unrolling this discrete-time affine contraction yields
+\begin{equation}
+\begin{aligned}
+\|L(S(t)) - L^*\|_F &\le (1-\eta_S)^t \|L(S(0)) - L^*\|_F + \Delta_\infty, \\
+\Delta_\infty &\le \sum_{b\in\mathcal{B}} w_b^* \Delta_L + \bar{\delta}_\mu,
+\end{aligned}
+\end{equation}
+which matches Sontag's discrete-time local Input-to-State Stability (ISS) definition with decay factor $1 - \eta_S \in (0, 1)$ and ultimate gain ball $\Delta_\infty$. Finally, whenever $\Delta_\infty < \Delta\lambda_c^* = \lambda_{c+1}(L^*) - \lambda_c(L^*)$, Weyl's inequality guarantees $\lambda_{c+1}(L_\infty) - \lambda_c(L^*) \ge \Delta\lambda_c^* - \Delta_\infty$, so applying the symmetric Davis--Kahan $\sin\Theta$ bound together with Proposition~2's steady-state ceiling $w_b^* \le \exp(-\frac{1+\kappa_I}{\tau}\Delta e_b)$ directly yields (7) in the main text. $\square$
+
+\FloatBarrier
+
+\section{Per-Cohort 10-TCGA Clean Performance and Complete Wilcoxon/BH-FDR Ledger}\label{sec:s3}
+
+Table~\ref{tab:p2_stab2} reports cohort metadata, sample/event counts, and per-cohort 5,000-permutation log-rank $-\log_{10}p_{\mathrm{perm}}$ across all 10 TCGA cancer types ($N = 3{,}113$, $1{,}235$ events). Table~\ref{tab:p2_stab3} reports the full paired Wilcoxon signed-rank $p$-values, Benjamini--Hochberg FDR $q$-values, mean ARI differences, and win/loss counts comparing \texttt{CL-VSSC (Null-SNR PI)} against all 9 competing methods across every multi-modality stress slice in the 1,560-run TCGA benchmark.
+
+\input{tables/p2_stab2_tcga_cohorts.tex}
+\input{tables/p2_stab3_wilcoxon_ledger.tex}
+
+\FloatBarrier
+
+\section{Multi-Site CITE-seq Dispersion and Bidirectional scRNA/ADT Fault Isolation}\label{sec:s4}
+
+Table~\ref{tab:p2_stab4} presents clean multi-site CITE-seq clustering scores ($\mathrm{mean} \pm \mathrm{SD}$ across 3 seeds) on \texttt{BMMC-Site1} ($32{,}004$), \texttt{BMMC-Site2} ($25{,}161$), \texttt{BMMC-10k}, and \texttt{BMMC-30k}, alongside bidirectional \texttt{BMMC-10k} fault testing under independent \texttt{scRNA} and \texttt{Protein-ADT} corruption ($\sigma \in \{1.5, 3.0\}$). Under $\sigma = 3.0$ \texttt{scRNA} corruption, \texttt{CL-VSSC-Anchor} ($w_{\mathrm{RNA}} = 0.069$) and \texttt{Null-SNR} ($0.060$) selectively reject RNA while preserving $\mathrm{ARI} = 0.208\text{--}0.213$; conversely, \texttt{Attention-MOAE} places static high weight on \texttt{ADT} ($w_{\mathrm{ADT}} = 0.891$ under \texttt{scRNA} faults; $w_{\mathrm{ADT}} = 0.866$ under \texttt{ADT} faults), which favors it when RNA degrades yet causes severe collapse ($\mathrm{ARI} = 0.051$) when ADT degrades.
+
+\input{tables/p2_stab4_cite_bidirectional.tex}
+
+\FloatBarrier
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
